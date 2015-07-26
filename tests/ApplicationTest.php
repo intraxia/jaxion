@@ -65,5 +65,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
         App::shutdown();
+        Mockery::close();
     }
 }
