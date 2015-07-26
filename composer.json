@@ -18,7 +18,6 @@
             "email": "jamesorodig@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Intraxia\\Jaxion\\": "src/"
