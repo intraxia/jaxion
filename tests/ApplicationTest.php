@@ -1,6 +1,9 @@
 <?php
 namespace Intraxia\Jaxion\Test;
 
+use Intraxia\Jaxion\Application as App;
+use Mockery;
+
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -10,17 +13,26 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         App::get();
     }
 
-    public function testShouldBoot()
+    public function testShouldGetInstantiatedInstance()
     {
-        App::boot();
+        $app1 = new App();
+        $app2 = App::get();
 
-        $app = App::get();
-        $this->assertInstanceOf('Intraxia\Jaxion\Application', $app);
+        $this->assertSame($app1, $app2);
+    }
+
+    public function testShouldThrowExceptionIfAlreadyBooted()
+    {
+        new App();
+
+        $this->setExpectedException('Intraxia\Jaxion\Exceptions\ApplicationAlreadyBootedException');
+
+        new App();
     }
 
     public function testShouldShutdown()
     {
-        App::boot();
+        new App();
         App::shutdown();
 
         $this->setExpectedException('Intraxia\Jaxion\Exceptions\ApplicationNotBootedException');
@@ -29,71 +41,82 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotAcceptStrings()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = 'test';
     }
 
     public function testShouldNotAcceptIntegers()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = 123;
     }
 
     public function testShouldNotAcceptBooleans()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = true;
     }
 
     public function testShouldNotAcceptNull()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = null;
     }
 
     public function testShouldNotAcceptArrays()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = array();
     }
 
     public function testShouldNotAcceptObjects()
     {
-        App::boot();
+        $app = new App();
 
-        $app = App::get();
         $this->setExpectedException('RuntimeException');
+
         $app['key'] = new \stdClass;
     }
 
-    public function testShouldImplementInterfaces()
+    public function testShouldImplementArrayAccess()
     {
-        $looped = false;
-        App::boot();
-        $app = App::get();
+        $app = new App();
 
         $app['key'] = function() {
             return 'value';
         };
 
+        $this->assertEquals($app['key'], 'value');
+        $this->assertTrue(isset($app['key']));
+
+        unset($app['key']);
+
+        $this->assertFalse(isset($app['key']));
+    }
+
+    public function testShouldImplementIterator()
+    {
+        $looped = false;
+        $app = new App();
+
         foreach ($app as $key => $value) {
-            $this->assertEquals('key', $key);
-            $this->assertEquals('value', $value);
+            $this->assertEquals('Loader', $key);
+            $this->assertInstanceOf('Intraxia\Jaxion\Loader', $value);
             $looped = true;
         }
 
@@ -102,8 +125,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldFailGettingUnsetKeys()
     {
-        App::boot();
-        $app = App::get();
+        $app = new App();
 
         $this->setExpectedException('InvalidArgumentException');
 
@@ -112,8 +134,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldTNotOverwriteGeneratedServices()
     {
-        App::boot();
-        $app = App::get();
+        $app = new App();
 
         $app['test'] = function() {
             return new \stdClass();
@@ -130,8 +151,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnAlreadyGeneratedService()
     {
-        App::boot();
-        $app = App::get();
+        $app = new App();
 
         $app['test'] = function() {
             return new \stdClass();
@@ -140,24 +160,27 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $service1 = $app['test'];
         $service2 = $app['test'];
 
-        $this->assertEquals($service1, $service2);
+        $this->assertSame($service1, $service2);
+    }
+
+    public function testShouldRunLoaderRegister()
+    {
+        $app = new App();
+
+        $app['Loader'] = function() {
+            $loader = Mockery::mock('Intraxia\Jaxion\Loader')->shouldDeferMissing();
+            $loader->shouldReceive('register')
+                ->once();
+
+            return $loader;
+        };
+
+        $app->boot();
     }
 
     public function tearDown()
     {
+        parent::tearDown();
         App::shutdown();
     }
-}
-
-/**
- * Class App
- *
- * Application stub to test the Application container
- * without invoking the Loader construction.
- *
- * @package Intraxia\Jaxion\Test
- */
-class App extends \Intraxia\Jaxion\Application
-{
-    protected function startup() {}
 }

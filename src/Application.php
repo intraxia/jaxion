@@ -1,5 +1,6 @@
 <?php namespace Intraxia\Jaxion;
 
+use Intraxia\Jaxion\Exceptions\ApplicationAlreadyBootedException;
 use Intraxia\Jaxion\Exceptions\ApplicationNotBootedException;
 
 /**
@@ -51,26 +52,38 @@ class Application implements \ArrayAccess, \Iterator{
     private $position = 0;
 
     /**
-     * Loader object for the Application.
-     *
-     * @var Loader
-     */
-    protected $loader;
-
-    /**
      * Singleton instance of the Application object
      *
      * @var Application
      */
-    protected static $instance;
+    protected static $instance = null;
 
     /**
-     * Starts up up the Application's Loader.
+     * Instantiates a new Application container.
+     *
+     * The Application constructor enforces the
+     *
+     * @throws ApplicationAlreadyBootedException
      */
-    protected function startup()
+    public function __construct()
     {
-        $this->loader = new Loader();
-        $this->loader->register($this);
+        if (static::$instance !== null) {
+            throw new ApplicationAlreadyBootedException;
+        }
+
+        static::$instance = $this;
+
+        $this['Loader'] = function($app) {
+            return new Loader($app);
+        };
+    }
+
+    /**
+     * Starts up up the Application.
+     */
+    public function boot()
+    {
+        $this['Loader']->register();
     }
 
     /**
@@ -197,21 +210,6 @@ class Application implements \ArrayAccess, \Iterator{
     }
 
     /**
-     * Boots up the Application.
-     *
-     * The Application object is a singleton which needs to be booted up at the
-     * beginning of the plugin execution. If the Application has not yet been
-     * instantiated, this will instantiate and save a new copy. Otherwise, it will
-     * do nothing.
-     */
-    public static function boot() {
-        if (static::$instance === null) {
-            static::$instance = new static;
-            static::$instance->startup();
-        }
-    }
-
-    /**
      * Retrieve the booted Application.
      *
      * If the Application has not yet been booted, an Exception will be thrown.
@@ -234,8 +232,8 @@ class Application implements \ArrayAccess, \Iterator{
      * If the Application has already been booted, the Application instance
      * will be destroyed by assigning it a null value, freeing it from memory.
      * However, the service objects will likely remain in memory if they've been
-     * attached to hooks. This function is primarily for uniting testing to make
-     * sure you can boot a new instance for each test.
+     * attached to hooks when this method is called. This function is primarily
+     * for uniting testing to make sure you can boot a new instance for each test.
      */
     public static function shutdown()
     {
