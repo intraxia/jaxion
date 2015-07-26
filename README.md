@@ -19,7 +19,12 @@ $ composer require intraxia/jaxion
 
 ## Usage
 
-Extend `Intraxia\Jaxion\Application`, define your Services as closures in the constructor, then run `App::boot()`.
+Extend `Intraxia\Jaxion\Application`, define your Services as closures in the constructor, then:
+
+``` php
+$app = new Application();
+$app->boot();
+```
 
 ## Change log
 
