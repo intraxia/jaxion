@@ -1,14 +1,10 @@
-<?php namespace Intraxia\Jaxion;
+<?php
+namespace Intraxia\Jaxion\Core;
 
-use Intraxia\Jaxion\Exceptions\ApplicationAlreadyBootedException;
-use Intraxia\Jaxion\Exceptions\ApplicationNotBootedException;
+use Intraxia\Jaxion\Contract\Core\Container as ContainerContract;
 
-/**
- * Class Application
- * @package Intraxia\Jaxion
- */
-class Application implements \ArrayAccess, \Iterator{
-
+class Container implements ContainerContract
+{
     /**
      * Application services, or closures to generate them.
      *
@@ -50,41 +46,6 @@ class Application implements \ArrayAccess, \Iterator{
      * @var int
      */
     private $position = 0;
-
-    /**
-     * Singleton instance of the Application object
-     *
-     * @var Application
-     */
-    protected static $instance = null;
-
-    /**
-     * Instantiates a new Application container.
-     *
-     * The Application constructor enforces the
-     *
-     * @throws ApplicationAlreadyBootedException
-     */
-    public function __construct()
-    {
-        if (static::$instance !== null) {
-            throw new ApplicationAlreadyBootedException;
-        }
-
-        static::$instance = $this;
-
-        $this['Loader'] = function($app) {
-            return new Loader($app);
-        };
-    }
-
-    /**
-     * Starts up up the Application.
-     */
-    public function boot()
-    {
-        $this['Loader']->register();
-    }
 
     /**
      * Set an object into the Application container.
@@ -207,38 +168,5 @@ class Application implements \ArrayAccess, \Iterator{
     public function valid()
     {
         return isset($this->iterableKeys[$this->position]);
-    }
-
-    /**
-     * Retrieve the booted Application.
-     *
-     * If the Application has not yet been booted, an Exception will be thrown.
-     *
-     * @return Application
-     * @throws ApplicationNotBootedException
-     */
-    public static function get()
-    {
-        if (static::$instance === null) {
-            throw new ApplicationNotBootedException;
-        }
-
-        return static::$instance;
-    }
-
-    /**
-     * Shuts down the booted Application.
-     *
-     * If the Application has already been booted, the Application instance
-     * will be destroyed by assigning it a null value, freeing it from memory.
-     * However, the service objects will likely remain in memory if they've been
-     * attached to hooks when this method is called. This function is primarily
-     * for uniting testing to make sure you can boot a new instance for each test.
-     */
-    public static function shutdown()
-    {
-        if (static::$instance !== null) {
-            static::$instance = null;
-        }
     }
 }

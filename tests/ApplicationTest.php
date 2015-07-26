@@ -1,7 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Test;
 
-use Intraxia\Jaxion\Application as App;
+use Intraxia\Jaxion\Core\Application as App;
 use Mockery;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
@@ -9,7 +9,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldThrowExceptionIfNotBooted()
     {
-        $this->setExpectedException('Intraxia\Jaxion\Exceptions\ApplicationNotBootedException');
+        $this->setExpectedException('Intraxia\Jaxion\Core\ApplicationNotBootedException');
         App::get();
     }
 
@@ -25,7 +25,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
         new App();
 
-        $this->setExpectedException('Intraxia\Jaxion\Exceptions\ApplicationAlreadyBootedException');
+        $this->setExpectedException('Intraxia\Jaxion\Core\ApplicationAlreadyBootedException');
 
         new App();
     }
@@ -35,132 +35,15 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         new App();
         App::shutdown();
 
-        $this->setExpectedException('Intraxia\Jaxion\Exceptions\ApplicationNotBootedException');
+        $this->setExpectedException('Intraxia\Jaxion\Core\ApplicationNotBootedException');
         App::get();
     }
 
-    public function testShouldNotAcceptStrings()
+    public function testShouldHaveLoader()
     {
         $app = new App();
 
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = 'test';
-    }
-
-    public function testShouldNotAcceptIntegers()
-    {
-        $app = new App();
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = 123;
-    }
-
-    public function testShouldNotAcceptBooleans()
-    {
-        $app = new App();
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = true;
-    }
-
-    public function testShouldNotAcceptNull()
-    {
-        $app = new App();
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = null;
-    }
-
-    public function testShouldNotAcceptArrays()
-    {
-        $app = new App();
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = array();
-    }
-
-    public function testShouldNotAcceptObjects()
-    {
-        $app = new App();
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['key'] = new \stdClass;
-    }
-
-    public function testShouldImplementArrayAccess()
-    {
-        $app = new App();
-
-        $app['key'] = function() {
-            return 'value';
-        };
-
-        $this->assertEquals($app['key'], 'value');
-        $this->assertTrue(isset($app['key']));
-
-        unset($app['key']);
-
-        $this->assertFalse(isset($app['key']));
-    }
-
-    public function testShouldImplementIterator()
-    {
-        $looped = false;
-        $app = new App();
-
-        foreach ($app as $key => $value) {
-            $this->assertEquals('Loader', $key);
-            $this->assertInstanceOf('Intraxia\Jaxion\Loader', $value);
-            $looped = true;
-        }
-
-        $this->assertTrue($looped, 'Application did not enter the loop.');
-    }
-
-    public function testShouldFailGettingUnsetKeys()
-    {
-        $app = new App();
-
-        $this->setExpectedException('InvalidArgumentException');
-
-        $app['test'];
-    }
-
-    public function testShouldTNotOverwriteGeneratedServices()
-    {
-        $app = new App();
-
-        $app['test'] = function() {
-            return new \stdClass();
-        };
-
-        $app['test'];
-
-        $this->setExpectedException('RuntimeException');
-
-        $app['test'] = function() {
-            return new \stdClass();
-        };
-    }
-
-    public function testShouldReturnAlreadyGeneratedService()
-    {
-        $app = new App();
-
-        $app['test'] = function() {
-            return new \stdClass();
-        };
-
-        $service1 = $app['test'];
-        $service2 = $app['test'];
-
-        $this->assertSame($service1, $service2);
+        $this->assertInstanceOf('Intraxia\Jaxion\Core\Loader', $app['Loader']);
     }
 
     public function testShouldRunLoaderRegister()

@@ -1,7 +1,10 @@
 <?php
-namespace Intraxia\Jaxion;
+namespace Intraxia\Jaxion\Core;
 
-class Loader
+use Intraxia\Jaxion\Contract\Core\Container as ContainerContract;
+use Intraxia\Jaxion\Contract\Core\Loader as LoaderContract;
+
+class Loader implements LoaderContract
 {
     /**
      * Array of action hooks to attach.
@@ -18,17 +21,26 @@ class Loader
     protected $filters = array();
 
     /**
-     * Registers the Application Services with their relevant hooks.
+     * Container of services to iterate over
      *
-     * Loops through all the services, checks for the presence of
-     * an `actions` or `filters` property on each service, and, if present,
-     * registers the declared actions and filters with WordPress.
-     *
-     * @param Application $app
+     * @var ContainerContract
      */
-    public function register(Application $app)
+    protected $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(ContainerContract $container)
     {
-        foreach ($app as $name => $service) {
+        $this->container = $container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register()
+    {
+        foreach ($this->container as $name => $service) {
             if (property_exists($service, 'actions') && is_array($service->actions)) {
                 $this->addActions($service);
             }
@@ -39,6 +51,20 @@ class Loader
         }
 
         add_action('plugins_loaded', array($this, 'run'));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function run()
+    {
+        foreach ($this->actions as $action) {
+            add_action($action['hook'], array($action['service'], $action['method']), $action['priority'], $action['args']);
+        }
+
+        foreach ($this->filters as $filter) {
+            add_filter($filter['hook'], array($filter['service'], $filter['method']), $filter['priority'], $filter['args']);
+        }
     }
 
     /**
@@ -100,22 +126,5 @@ class Loader
         );
 
         return $hooks;
-    }
-
-    /**
-     * Register all the actions and filters with WordPress.
-     *
-     * Loops through all the registered actions/filters and fires add_* for each of
-     * them respectively.
-     */
-    public function run()
-    {
-        foreach ($this->actions as $action) {
-            add_action($action['hook'], array($action['service'], $action['method']), $action['priority'], $action['args']);
-        }
-
-        foreach ($this->filters as $filter) {
-            add_filter($filter['hook'], array($filter['service'], $filter['method']), $filter['priority'], $filter['args']);
-        }
     }
 }
