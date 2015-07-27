@@ -31,7 +31,7 @@ class Application extends Container implements ApplicationContract
 
         static::$instance = $this;
 
-        $this['Loader'] = function($app) {
+        $this['Loader'] = function ($app) {
             return new Loader($app);
         };
     }

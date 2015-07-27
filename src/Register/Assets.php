@@ -60,12 +60,20 @@ class Assets implements AssetsContract
     /**
      * @inheritDoc
      */
-    public function __construct($url, $debug = false)
+    public function __construct($url)
     {
         $this->url = $url; // @todo should we trailingslashit this?
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function setDebug($debug)
+    {
         if ($debug) {
             $this->min = '.min';
+        } else {
+            $this->min = '';
         }
     }
 

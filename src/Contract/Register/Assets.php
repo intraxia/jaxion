@@ -12,9 +12,20 @@ interface Assets
      * root directory.
      *
      * @param string $url
+     */
+    public function __construct($url);
+
+    /**
+     * Enable debug mode for the enqueued assets.
+     *
+     * Debug mode is not required and can be enabled/disabled based on whatever
+     * runtime required by the developer. Primarily, this is intended to be used
+     * along with WordPress's `SCRIPT_DEBUG` constant, which enables unminified
+     * core assets to be enqueued.
+     *
      * @param bool $debug
      */
-    public function __construct($url, $debug = false);
+    public function setDebug($debug);
 
     /**
      * Loops through the Assets' `$scripts` property and enqueues the Web + Shared scripts.

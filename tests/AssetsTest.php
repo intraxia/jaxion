@@ -19,14 +19,18 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
         $this->assets = new Assets('test.com/');
     }
 
-    public function testShouldUseMinIfScriptDebug()
+    public function testShouldToggleDebugMode()
     {
-        $assets = new Assets('test.com/', true);
-
-        $min = new ReflectionProperty($assets, 'min');
+        $min = new ReflectionProperty($this->assets, 'min');
         $min->setAccessible(true);
 
-        $this->assertEquals('.min', $min->getValue($assets));
+        $this->assets->setDebug(true);
+
+        $this->assertEquals('.min', $min->getValue($this->assets));
+
+        $this->assets->setDebug(false);
+
+        $this->assertEquals('', $min->getValue($this->assets));
     }
 
     public function testShouldEnqueueWebScript()
