@@ -37,7 +37,7 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function boot()
     {
@@ -45,7 +45,7 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function get()
     {
@@ -57,7 +57,7 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function shutdown()
     {

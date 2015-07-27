@@ -28,7 +28,7 @@ class Loader implements LoaderContract
     protected $container;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function __construct(ContainerContract $container)
     {
@@ -36,7 +36,7 @@ class Loader implements LoaderContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function register()
     {
@@ -54,7 +54,7 @@ class Loader implements LoaderContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function run()
     {
