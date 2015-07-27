@@ -59,11 +59,21 @@ class Loader implements LoaderContract
     public function run()
     {
         foreach ($this->actions as $action) {
-            add_action($action['hook'], array($action['service'], $action['method']), $action['priority'], $action['args']);
+            add_action(
+                $action['hook'],
+                array($action['service'], $action['method']),
+                $action['priority'],
+                $action['args']
+            );
         }
 
         foreach ($this->filters as $filter) {
-            add_filter($filter['hook'], array($filter['service'], $filter['method']), $filter['priority'], $filter['args']);
+            add_filter(
+                $filter['hook'],
+                array($filter['service'], $filter['method']),
+                $filter['priority'],
+                $filter['args']
+            );
         }
     }
 
@@ -116,7 +126,8 @@ class Loader implements LoaderContract
      * @param int $accepted_args
      * @return array
      */
-    protected function add($hooks, $hook, $service, $method, $priority, $accepted_args) {
+    protected function add($hooks, $hook, $service, $method, $priority, $accepted_args)
+    {
         $hooks[] = array(
             'hook' => $hook,
             'service' => $service,
