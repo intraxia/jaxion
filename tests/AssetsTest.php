@@ -35,14 +35,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueWebScript()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'web',
             'condition' => function () {
                 return true;
             },
             'handle' => 'webScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 1,
@@ -54,14 +54,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueWebScriptIfFalseCondition()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'web',
             'condition' => function () {
                 return false;
             },
             'handle' => 'webScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 0,
@@ -72,14 +72,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueWebStyle()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'web',
             'condition' => function () {
                 return true;
             },
             'handle' => 'webStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 1,
@@ -91,14 +91,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueWebStyleIfFalseCondition()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'web',
             'condition' => function () {
                 return false;
             },
             'handle' => 'webStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 0,
@@ -109,14 +109,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueAdminScript()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'admin',
             'condition' => function () {
                 return true;
             },
             'handle' => 'adminScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 1,
@@ -128,14 +128,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueAdminScriptIfFalseCondition()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'admin',
             'condition' => function () {
                 return false;
             },
             'handle' => 'adminScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 0,
@@ -146,14 +146,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueAdminStyle()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'admin',
             'condition' => function () {
                 return true;
             },
             'handle' => 'adminStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 1,
@@ -165,14 +165,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueAdminStyleIfFalseCondition()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'admin',
             'condition' => function () {
                 return false;
             },
             'handle' => 'adminStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 0,
@@ -183,14 +183,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueSharedScript()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'shared',
             'condition' => function () {
                 return true;
             },
             'handle' => 'sharedScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 2,
@@ -203,14 +203,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueSharedScriptIfFalseCondition()
     {
-        $this->assets->scripts[] = array(
+        $this->assets->registerScript(array(
             'type' => 'shared',
             'condition' => function () {
                 return false;
             },
             'handle' => 'sharedScript',
             'src' => 'test.js',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
             'times' => 0,
@@ -222,14 +222,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldEnqueueSharedStyle()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'shared',
             'condition' => function () {
                 return true;
             },
             'handle' => 'sharedStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 2,
@@ -242,14 +242,14 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotEnqueueSharedStyleIfFalseCondition()
     {
-        $this->assets->styles[] = array(
+        $this->assets->registerStyle(array(
             'type' => 'shared',
             'condition' => function () {
                 return false;
             },
             'handle' => 'sharedStyle',
             'src' => 'test.css',
-        );
+        ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
             'times' => 0,

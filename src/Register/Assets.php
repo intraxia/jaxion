@@ -48,14 +48,14 @@ class Assets implements AssetsContract
      *
      * @var array
      */
-    public $scripts = array();
+    private $scripts = array();
 
     /**
      * Array of style definition arrays.
      *
      * @var array
      */
-    public $styles = array();
+    private $styles = array();
 
     /**
      * @inheritDoc
@@ -63,6 +63,8 @@ class Assets implements AssetsContract
     public function __construct($url)
     {
         $this->url = $url; // @todo should we trailingslashit this?
+
+        $this->register();
     }
 
     /**
@@ -75,6 +77,22 @@ class Assets implements AssetsContract
         } else {
             $this->min = '';
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function registerScript($script)
+    {
+        $this->scripts[] = $script;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function registerStyle($style)
+    {
+        $this->styles[] = $style;
     }
 
     /**
@@ -123,6 +141,19 @@ class Assets implements AssetsContract
                 $this->enqueueStyle($style);
             }
         }
+    }
+
+    /**
+     * Registers all the scripts at runtime.
+     *
+     * This function is intended to be overwritten by the child class. The developer
+     * should use this to define the scripts they'd like to have registered. The
+     * assets cannot be defined in the object's properties because a Closure cannot
+     * be defined there, so it must be defined at Runtime, in this method.
+     */
+    protected function register()
+    {
+        // no-op
     }
 
     /**

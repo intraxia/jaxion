@@ -28,6 +28,20 @@ interface Assets
     public function setDebug($debug);
 
     /**
+     * Provides a method to register new scripts outside of the constructor.
+     *
+     * @param array $script
+     */
+    public function registerScript($script);
+
+    /**
+     * Provides a method to register new styles outside of the constructor.
+     *
+     * @param array $style
+     */
+    public function registerStyle($style);
+
+    /**
      * Loops through the Assets' `$scripts` property and enqueues the Web + Shared scripts.
      */
     public function enqueueWebScripts();
