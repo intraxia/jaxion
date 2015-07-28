@@ -26,6 +26,10 @@ class Assets implements AssetsContract
      */
     public $actions = array(
         array(
+            'hook' => 'wp_loaded', // @todo revisit this requirement
+            'method' => 'register',
+        ),
+        array(
             'hook' => 'wp_enqueue_scripts',
             'method' => 'enqueueWebScripts',
         ),
@@ -63,8 +67,6 @@ class Assets implements AssetsContract
     public function __construct($url)
     {
         $this->url = $url; // @todo should we trailingslashit this?
-
-        $this->register();
     }
 
     /**
@@ -144,14 +146,14 @@ class Assets implements AssetsContract
     }
 
     /**
-     * Registers all the scripts at runtime.
+     * Registers all the scripts at runtime after WordPress is loaded.
      *
      * This function is intended to be overwritten by the child class. The developer
      * should use this to define the scripts they'd like to have registered. The
      * assets cannot be defined in the object's properties because a Closure cannot
-     * be defined there, so it must be defined at Runtime, in this method.
+     * be defined there, so it must be defined at runtime.
      */
-    protected function register()
+    public function register()
     {
         // no-op
     }
