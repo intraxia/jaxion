@@ -41,7 +41,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'webScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -60,7 +60,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'webScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -78,7 +78,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'webStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
@@ -97,7 +97,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'webStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
@@ -115,7 +115,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'adminScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -134,7 +134,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'adminScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -152,7 +152,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'adminStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
@@ -171,7 +171,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'adminStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
@@ -189,7 +189,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'sharedScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -209,7 +209,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'sharedScript',
-            'src' => 'test.js',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_script', array(
@@ -228,7 +228,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'handle' => 'sharedStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(
@@ -248,7 +248,7 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
                 return false;
             },
             'handle' => 'sharedStyle',
-            'src' => 'test.css',
+            'src' => 'test',
         ));
 
         WP_Mock::wpFunction('wp_enqueue_style', array(

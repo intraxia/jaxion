@@ -166,7 +166,7 @@ class Assets implements AssetsContract
         if ($script['condition']()) {
             wp_enqueue_script(
                 $script['handle'],
-                $this->url . $script['src'],
+                $this->url . $script['src'] . '.js',
                 isset($script['deps']) ? $script['deps'] : array(),
                 null, // @todo implement version
                 isset($script['footer']) ? $script['footer'] : false
@@ -184,7 +184,7 @@ class Assets implements AssetsContract
         if ($style['condition']()) {
             wp_enqueue_style(
                 $style['handle'],
-                $this->url . $style['src'],
+                $this->url . $style['src'] . '.css',
                 isset($style['deps']) ? $style['deps'] : array(),
                 null, // @todo implement version
                 isset($style['media']) ? $style['media'] : 'all'
