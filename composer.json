@@ -9,7 +9,8 @@
         "mockery/mockery": "~0.9.4",
         "wp-cli/wp-cli": "~0.19.2",
         "10up/wp_mock": "0.1.*",
-        "scrutinizer/ocular": "~1.1"
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3"
     },
     "license": "MIT",
     "authors": [
@@ -29,6 +30,8 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "sniff": "phpcs -p src/ --standard=PSR2 --report=summary",
+        "clean": "phpcbf -p src/ --standard=PSR2 --report=summary",
+        "test": "phpunit"
     }
 }
