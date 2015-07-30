@@ -67,8 +67,16 @@ class Container implements ContainerContract
      */
     public function offsetSet($id, $value)
     {
-        if ($value === null || isset($this->frozen[$id]) || isset($this->protected[$id])) {
+        if (isset($this->frozen[$id])) {
             throw new \RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+        }
+
+        if (isset($this->protected[$id])) {
+            throw new \RuntimeException(sprintf('Cannot override protected value "%s".', $id));
+        }
+
+        if ($value === null) {
+            throw new \RuntimeException(sprintf('Cannot set null for "%s".', $id));
         }
 
         $this->keys[$id] = true;
