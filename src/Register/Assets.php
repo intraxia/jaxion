@@ -66,7 +66,7 @@ class Assets implements AssetsContract
      */
     public function __construct($url)
     {
-        $this->url = $url; // @todo should we trailingslashit this?
+        $this->url = $url;
     }
 
     /**
