@@ -259,6 +259,34 @@ class AssetsTest extends \PHPUnit_Framework_TestCase
         $this->assets->enqueueAdminStyles();
     }
 
+    public function testShouldLocalizeScriptIfSet()
+    {
+        $this->assets->registerScript(array(
+            'type' => 'web',
+            'condition' => function () {
+                return true;
+            },
+            'handle' => 'webScript',
+            'src' => 'test',
+            'localize' => array(
+                'name' => 'test_local',
+                'data' => 'local_test',
+            )
+        ));
+
+        WP_Mock::wpFunction('wp_enqueue_script', array(
+            'times' => 1,
+            'args' => array( 'webScript', 'test.com/test.js', array(), null, false ),
+        ));
+
+        WP_Mock::wpFunction('wp_localize_script', array(
+            'times' => 1,
+            'args' => array('webScript', 'test_local', 'local_test'),
+        ));
+
+        $this->assets->enqueueWebScripts();
+    }
+
     public function tearDown()
     {
         parent::tearDown();

@@ -173,6 +173,14 @@ class Assets implements AssetsContract
                 null, // @todo implement version
                 isset($script['footer']) ? $script['footer'] : false
             );
+
+            if (isset($script['localize'])) {
+                wp_localize_script(
+                    $script['handle'],
+                    $script['localize']['name'],
+                    $script['localize']['data']
+                );
+            }
         }
     }
 
