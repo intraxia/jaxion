@@ -6,86 +6,102 @@ use Mockery;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Container
+     */
+    public $container;
 
-    public function testShouldNotAcceptStrings()
+    public function setUp()
     {
-        $container = new Container();
-
-        $this->setExpectedException('RuntimeException');
-
-        $container['key'] = 'test';
+        parent::setUp();
+        $this->container = new Container();
     }
 
-    public function testShouldNotAcceptIntegers()
+    public function testStringsShouldBeProtected()
     {
-        $container = new Container();
+        $this->container['key'] = 'test';
+
+        $this->assertEquals('test', $this->container['key']);
 
         $this->setExpectedException('RuntimeException');
 
-        $container['key'] = 123;
+        $this->container['key'] = 'newstring';
     }
 
-    public function testShouldNotAcceptBooleans()
+    public function testIntegersShouldBeProtected()
     {
-        $container = new Container();
+        $this->container['key'] = 123;
+
+        $this->assertEquals($this->container['key'], 123);
 
         $this->setExpectedException('RuntimeException');
 
-        $container['key'] = true;
+        $this->container['key'] = 456;
+    }
+
+    public function testBooleansShouldBeProtected()
+    {
+        $this->container['key'] = true;
+
+        $this->assertEquals($this->container['key'], true);
+
+        $this->setExpectedException('RuntimeException');
+
+        $this->container['key'] = false;
     }
 
     public function testShouldNotAcceptNull()
     {
-        $container = new Container();
-
         $this->setExpectedException('RuntimeException');
 
-        $container['key'] = null;
+        $this->container['key'] = null;
     }
 
-    public function testShouldNotAcceptArrays()
+    public function testArraysShouldBeProtected()
     {
-        $container = new Container();
+        $this->container['key'] = array('one');
+
+        $this->assertEquals(array('one'), $this->container['key']);
 
         $this->setExpectedException('RuntimeException');
 
-        $container['key'] = array();
+        $this->container['key'] = array('two');
     }
 
-    public function testShouldNotAcceptObjects()
+    public function testObjectsShouldBeProtected()
     {
-        $container = new Container();
+        $this->container['key'] = new \stdClass();
+
+        $this->assertInstanceOf('stdClass', $this->container['key']);
 
         $this->setExpectedException('RuntimeException');
 
-        $container['key'] = new \stdClass;
+        $this->container['key'] = new \stdClass;
     }
 
     public function testShouldImplementArrayAccess()
     {
-        $container = new Container();
-
-        $container['key'] = function() {
+        $this->container['key'] = function () {
             return 'value';
         };
 
-        $this->assertEquals($container['key'], 'value');
-        $this->assertTrue(isset($container['key']));
+        $this->assertEquals($this->container['key'], 'value');
+        $this->assertTrue(isset($this->container['key']));
 
-        unset($container['key']);
+        unset($this->container['key']);
 
-        $this->assertFalse(isset($container['key']));
+        $this->assertFalse(isset($this->container['key']));
     }
 
     public function testShouldImplementIterator()
     {
         $looped = false;
-        $container = new Container();
-        $container['key'] = function() {
+
+        $this->container['key'] = function () {
             return 'value';
         };
 
-        foreach ($container as $key => $value) {
+        foreach ($this->container as $key => $value) {
             $this->assertEquals('key', $key);
             $this->assertEquals('value', $value);
             $looped = true;
@@ -96,40 +112,36 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldFailGettingUnsetKeys()
     {
-        $container = new Container();
+
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $container['test'];
+        $this->container['test'];
     }
 
     public function testShouldTNotOverwriteGeneratedServices()
     {
-        $container = new Container();
-
-        $container['test'] = function() {
+        $this->container['test'] = function () {
             return new \stdClass();
         };
 
-        $container['test'];
+        $this->container['test'];
 
         $this->setExpectedException('RuntimeException');
 
-        $container['test'] = function() {
+        $this->container['test'] = function () {
             return new \stdClass();
         };
     }
 
     public function testShouldReturnAlreadyGeneratedService()
     {
-        $container = new Container();
-
-        $container['test'] = function() {
+        $this->container['test'] = function () {
             return new \stdClass();
         };
 
-        $service1 = $container['test'];
-        $service2 = $container['test'];
+        $service1 = $this->container['test'];
+        $service2 = $this->container['test'];
 
         $this->assertSame($service1, $service2);
     }

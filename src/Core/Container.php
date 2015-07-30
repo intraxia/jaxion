@@ -34,6 +34,13 @@ class Container implements ContainerContract
     private $keys = array();
 
     /**
+     * Protected variables registered in the container.
+     *
+     * @var <string>mixed[]
+     */
+    private $protected = array();
+
+    /**
      * Keys of all the registered services.
      *
      * @var string[]
@@ -50,8 +57,9 @@ class Container implements ContainerContract
     /**
      * Set an object into the Application container.
      *
-     * Values must be a Closure that returns the service you want to attach to the
-     * Application. An Exception will be thrown if the value is not a Closure.
+     * Services must be defined as Closure that returns the service you want to attach to the
+     * Application. If anything else is provided, that will be registered as protected and can't
+     * be overridden.
      *
      * @param  string $id
      * @param  \Closure $value
@@ -59,25 +67,26 @@ class Container implements ContainerContract
      */
     public function offsetSet($id, $value)
     {
-        if (isset($this->frozen[$id])) {
+        if ($value === null || isset($this->frozen[$id]) || isset($this->protected[$id])) {
             throw new \RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
         }
 
-        if (!method_exists($value, '__invoke')) {
-            throw new \RuntimeException(sprintf('Service "%s" is not a closure.', $id));
-        }
-
-        $this->values[$id] = $value;
         $this->keys[$id] = true;
+
+        if (!is_object($value) || !method_exists($value, '__invoke')) {
+            $this->protected[$id] = $value;
+        } else {
+            $this->values[$id] = $value;
+        }
     }
 
     /**
-     * Retrieves the service object from the Application container.
+     * Retrieves the service object or protected value from the Application container.
      *
      * If the service has not already been instantiated, the Closure to create
      * it will be executed and the result saved to the Application object.
-     * If the service has already been instantiate, the previous version will be retrieved
-     * from the Application container.
+     * If the service has already been instantiated, the previous version will be retrieved
+     * from the Application container. Non-Closures will be returned directly.
      *
      * @param string $id
      * @return object
@@ -90,6 +99,10 @@ class Container implements ContainerContract
 
         if (isset($this->raw[$id])) {
             return $this->values[$id];
+        }
+
+        if (isset($this->protected[$id])) {
+            return $this->protected[$id];
         }
 
         $raw = $this->values[$id];
