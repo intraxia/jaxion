@@ -16,20 +16,19 @@ class Application extends Container implements ApplicationContract
     protected static $instance = null;
 
     /**
-     * Instantiates a new Application container.
-     *
-     * The Application constructor enforces the presence of of a single instance
-     * of the Application. If an instance already exists, an Exception will be thrown.
-     *
-     * @throws ApplicationAlreadyBootedException
+     * @inheritdoc
      */
-    public function __construct()
+    public function __construct($file)
     {
         if (static::$instance !== null) {
             throw new ApplicationAlreadyBootedException;
         }
 
         static::$instance = $this;
+
+        $this['url'] = plugin_dir_url($file);
+        $this['path'] = plugin_dir_path($file);
+        $this['basename'] = plugin_basename($file);
 
         $this['Loader'] = function ($app) {
             return new Loader($app);

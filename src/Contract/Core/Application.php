@@ -4,7 +4,21 @@ namespace Intraxia\Jaxion\Contract\Core;
 interface Application
 {
     /**
+     * Instantiates a new Application container.
+     *
+     * The Application constructor enforces the presence of of a single instance
+     * of the Application. If an instance already exists, an Exception will be thrown.
+     *
+     * @param string $file
+     * @throws \Intraxia\Jaxion\Core\ApplicationAlreadyBootedException
+     */
+    public function __construct($file);
+
+    /**
      * Starts up the Application.
+     *
+     * Retrieves the Application's loader instance, and runs the Loader's register method,
+     * attaching all of the Application container's services to their respective WordPress hooks.
      */
     public function boot();
 
