@@ -89,6 +89,15 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $app->boot();
     }
 
+    public function testShouldHaveI18n()
+    {
+        $this->mockConstructorFunctions();
+
+        $app = new App(__FILE__);
+
+        $this->assertInstanceOf('Intraxia\Jaxion\Register\I18n', $app['I18n']);
+    }
+
     protected function mockConstructorFunctions()
     {
         WP_Mock::wpPassthruFunction('plugin_dir_url', array('times' => 1));

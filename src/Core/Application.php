@@ -1,6 +1,7 @@
 <?php namespace Intraxia\Jaxion\Core;
 
 use Intraxia\Jaxion\Contract\Core\Application as ApplicationContract;
+use Intraxia\Jaxion\Register\I18n;
 
 /**
  * Class Application
@@ -29,6 +30,10 @@ class Application extends Container implements ApplicationContract
         $this['url'] = plugin_dir_url($file);
         $this['path'] = plugin_dir_path($file);
         $this['basename'] = plugin_basename($file);
+
+        $this['I18n'] = function ($app) {
+            return new I18n($app['path']);
+        };
 
         $this['Loader'] = function ($app) {
             return new Loader($app);
