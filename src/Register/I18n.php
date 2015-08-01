@@ -20,8 +20,8 @@ class I18n implements I18nContract
      */
     public $actions = array(
         array(
-            'method' => 'loadTranslation',
             'hook' => 'after_setup_theme',
+            'method' => 'loadTranslation',
         ),
     );
 

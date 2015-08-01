@@ -90,6 +90,27 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $this->loader->run();
     }
 
+    public function testShouldNotRegisterLoader()
+    {
+        $service = new Loader($this->app);
+
+        $this->app
+            ->shouldReceive('valid')
+            ->twice()
+            ->andReturn(true, false);
+        $this->app
+            ->shouldReceive('current')
+            ->andReturn($service);
+        $this->app
+            ->shouldReceive('key')
+            ->andReturn('test_service');
+
+        WP_Mock::expectActionAdded('plugins_loaded', array($this->loader, 'run'));
+
+        $this->loader->register();
+        $this->loader->run();
+    }
+
     public function tearDown()
     {
         WP_Mock::tearDown();

@@ -41,6 +41,11 @@ class Loader implements LoaderContract
     public function register()
     {
         foreach ($this->container as $name => $service) {
+            // Don't register any Loaders
+            if ($service instanceof Loader) {
+                continue;
+            }
+
             if (property_exists($service, 'actions') && is_array($service->actions)) {
                 $this->addActions($service);
             }
