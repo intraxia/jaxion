@@ -23,6 +23,24 @@ interface Application
     public function boot();
 
     /**
+     * Fired on plugin activation.
+     *
+     * This function is attached to `register_activation_hook` and is fired when the plugin is
+     * activated by WordPress. This gives the developer a place to set up any options,
+     * add any custom tables, or flush rewrite rules, as required.
+     */
+    public function activate();
+
+    /**
+     * Fired on plugin deactivation.
+     *
+     * This function is attached to `register_deactivation_hook` and is fired when the plugin
+     * is deactivated by WordPress. This gives the developer a place to clean up anything left
+     * behind by the plugin.
+     */
+    public function deactivate();
+
+    /**
      * Retrieves the booted Application.
      *
      * If the Application has not yet been booted, an Exception will be thrown.

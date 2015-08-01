@@ -38,6 +38,9 @@ class Application extends Container implements ApplicationContract
         $this['Loader'] = function ($app) {
             return new Loader($app);
         };
+
+        register_activation_hook($file, array($this, 'activate'));
+        register_deactivation_hook($file, array($this, 'deactivate'));
     }
 
     /**
@@ -46,6 +49,24 @@ class Application extends Container implements ApplicationContract
     public function boot()
     {
         $this['Loader']->register();
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    public function activate()
+    {
+        // no-op
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    public function deactivate()
+    {
+        // no-op
     }
 
     /**
