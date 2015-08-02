@@ -1,6 +1,8 @@
 <?php
 namespace Intraxia\Jaxion\Contract\Core;
 
+use Closure;
+
 interface Application
 {
     /**
@@ -39,6 +41,19 @@ interface Application
      * behind by the plugin.
      */
     public function deactivate();
+
+    /**
+     * Registers a command with WP-CLI.
+     *
+     * This is a helper function for registering commands. The first parameter is the command name
+     * as you would normally register with WP-CLI. The second parameter should be a closure that
+     * returns the class to register with WP-CLI. This cleans up some of the boilerplate required
+     * to register commands as well as make WP-CLI command classes injectable.
+     *
+     * @param string $name
+     * @param Closure $class
+     */
+    public function command($name, Closure $class);
 
     /**
      * Retrieves the booted Application.

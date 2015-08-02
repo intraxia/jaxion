@@ -2,6 +2,8 @@
 
 use Intraxia\Jaxion\Contract\Core\Application as ApplicationContract;
 use Intraxia\Jaxion\Register\I18n;
+use Closure;
+use WP_CLI;
 
 /**
  * Class Application
@@ -67,6 +69,16 @@ class Application extends Container implements ApplicationContract
     public function deactivate()
     {
         // no-op
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function command($name, Closure $class)
+    {
+        if (defined('WP_CLI') && WP_CLI) {
+            WP_CLI::add_command($name, $class($this));
+        }
     }
 
     /**

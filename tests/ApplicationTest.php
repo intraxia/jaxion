@@ -4,6 +4,7 @@ namespace Intraxia\Jaxion\Test;
 use Intraxia\Jaxion\Core\Application as App;
 use Mockery;
 use WP_Mock;
+use stdClass;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
@@ -96,6 +97,24 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $app = new App(__FILE__);
 
         $this->assertInstanceOf('Intraxia\Jaxion\Register\I18n', $app['I18n']);
+    }
+
+    public function testShouldRegisterCommand()
+    {
+        $this->mockConstructorFunctions();
+
+        define('WP_CLI', true);
+        $command = new stdClass();
+        $cli = Mockery::mock('alias:WP_CLI');
+        $cli->shouldReceive('add_command')
+            ->with('test', $command)
+            ->once();
+
+        $app = new App(__FILE__);
+
+        $app->command('test', function () use ($command) {
+            return $command;
+        });
     }
 
     protected function mockConstructorFunctions()
