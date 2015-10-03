@@ -54,6 +54,13 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $base->test);
     }
 
+    public function testShouldNotAssignPost()
+    {
+        $base = new TableBase();
+
+        $this->assertFalse($base->getUnderlyingPost());
+    }
+
     public function tearDown()
     {
         parent::tearDown();

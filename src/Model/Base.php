@@ -72,7 +72,7 @@ abstract class Base
             $this->setAttribute($name, $value);
         }
 
-        if (!isset($this->attributes['post'])) {
+        if ($this->post && !isset($this->attributes['post'])) {
             $this->createDefaultPost();
         }
     }
@@ -96,11 +96,15 @@ abstract class Base
      * Returns the underlying WP_Post object for the model, representing
      * the data that will be save in the wp_posts table.
      *
-     * @return WP_Post
+     * @return false|WP_Post
      */
     public function getUnderlyingPost()
     {
-        return $this->attributes['post'];
+        if (isset($this->attributes['post'])) {
+            return $this->attributes['post'];
+        }
+
+        return false;
     }
 
     /**
