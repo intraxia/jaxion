@@ -33,21 +33,8 @@ class Application extends Container implements ApplicationContract
 
         static::$instance = $this;
 
-        $this['url'] = plugin_dir_url($file);
-        $this['path'] = plugin_dir_path($file);
-        $this['basename'] = plugin_basename($file);
-
-        $this['I18n'] = function ($app) {
-            return new I18n($app['path']);
-        };
-
-        $this['Loader'] = function ($app) {
-            return new Loader($app);
-        };
-
-        $this['Router'] = function () {
-            return new Router();
-        };
+        $this->registerDefaultConstants($file);
+        $this->registerDefaultServices();
 
         register_activation_hook($file, array($this, 'activate'));
         register_deactivation_hook($file, array($this, 'deactivate'));
@@ -128,5 +115,35 @@ class Application extends Container implements ApplicationContract
         if (static::$instance !== null) {
             static::$instance = null;
         }
+    }
+
+    /**
+     * Sets the plugin's url, path, and basename.
+     *
+     * @param string $file
+     */
+    private function registerDefaultConstants($file)
+    {
+        $this['url']      = plugin_dir_url($file);
+        $this['path']     = plugin_dir_path($file);
+        $this['basename'] = plugin_basename($file);
+    }
+
+    /**
+     * Registers the built-in services with the Application container.
+     */
+    private function registerDefaultServices()
+    {
+        $this['I18n'] = function ($app) {
+            return new I18n($app['path']);
+        };
+
+        $this['Loader'] = function ($app) {
+            return new Loader($app);
+        };
+
+        $this['Router'] = function () {
+            return new Router();
+        };
     }
 }
