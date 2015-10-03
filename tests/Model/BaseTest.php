@@ -5,6 +5,9 @@ use Intraxia\Jaxion\Test\Stubs\MetaBase;
 use Intraxia\Jaxion\Test\Stubs\TableBase;
 use Mockery;
 
+/**
+ * @group model
+ */
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -12,6 +15,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $mockPost = Mockery::mock('overload:WP_Post');
     }
+
     public function testShouldConstructToMetaWithNoTable()
     {
         $base = new MetaBase(array(
@@ -25,7 +29,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAssignToMetaWithNoTable()
     {
-        $base = new MetaBase(array());
+        $base = new MetaBase();
         $base->test = 'value';
 
         $attributes = $base->getAttributes();
@@ -46,7 +50,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAssignToTable()
     {
-        $base = new TableBase(array());
+        $base = new TableBase();
         $base->test = 'value';
 
         $attributes = $base->getAttributes();

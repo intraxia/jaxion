@@ -66,7 +66,7 @@ abstract class Base
      *
      * @param array <string, mixed> $attributes
      */
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = array())
     {
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
