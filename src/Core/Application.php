@@ -1,6 +1,7 @@
 <?php namespace Intraxia\Jaxion\Core;
 
 use Intraxia\Jaxion\Contract\Core\Application as ApplicationContract;
+use Intraxia\Jaxion\Http\Router;
 use Intraxia\Jaxion\Register\I18n;
 use Closure;
 use WP_CLI;
@@ -41,16 +42,31 @@ class Application extends Container implements ApplicationContract
             return new Loader($app);
         };
 
+        $this['Router'] = function () {
+            return new Router();
+        };
+
         register_activation_hook($file, array($this, 'activate'));
         register_deactivation_hook($file, array($this, 'deactivate'));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function boot()
     {
+        $this->routes($this['Router']);
         $this['Loader']->register();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function routes($router)
+    {
+        // no-op
     }
 
     /**

@@ -25,6 +25,18 @@ interface Application
     public function boot();
 
     /**
+     * Registers the routes with the router.
+     *
+     * This function is a no-op run during the Application's boot step. It's passed the
+     * Router instance used by the Application, on which the REST routes can be registered.
+     * The extending application should use this function to register their routes with the
+     * WordPress RESTful API.
+     *
+     * @param object $router
+     */
+    public function routes($router);
+
+    /**
      * Fired on plugin activation.
      *
      * This function is attached to `register_activation_hook` and is fired when the plugin is
