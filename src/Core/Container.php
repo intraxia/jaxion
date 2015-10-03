@@ -2,7 +2,16 @@
 namespace Intraxia\Jaxion\Core;
 
 use Intraxia\Jaxion\Contract\Core\Container as ContainerContract;
+use InvalidArgumentException;
 
+/**
+ * Class Container
+ *
+ * Contains, manages, and retrieves service objects.
+ *
+ * @package Intraxia\Jaxion
+ * @subpackage Core
+ */
 class Container implements ContainerContract
 {
     /**
@@ -61,7 +70,7 @@ class Container implements ContainerContract
      * Application. If anything else is provided, that will be registered as protected and can't
      * be overridden.
      *
-     * @param  string $id
+     * @param  string   $id
      * @param  \Closure $value
      * @throws \RuntimeException
      */
@@ -96,13 +105,14 @@ class Container implements ContainerContract
      * If the service has already been instantiated, the previous version will be retrieved
      * from the Application container. Non-Closures will be returned directly.
      *
-     * @param string $id
+     * @param  string $id
      * @return object
+     * @throws InvalidArgumentException
      */
     public function offsetGet($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (isset($this->raw[$id])) {
@@ -135,7 +145,7 @@ class Container implements ContainerContract
     /**
      * Unsets a parameter or an object.
      *
-     * @param string $id The unique identifier for the parameter or object
+     * @param string $id Unique identifier for the parameter or object.
      */
     public function offsetUnset($id)
     {

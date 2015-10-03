@@ -62,7 +62,7 @@ interface Application
      * returns the class to register with WP-CLI. This cleans up some of the boilerplate required
      * to register commands as well as make WP-CLI command classes injectable.
      *
-     * @param string $name
+     * @param string  $name
      * @param Closure $class
      */
     public function command($name, Closure $class);

@@ -3,6 +3,14 @@ namespace Intraxia\Jaxion\Register;
 
 use Intraxia\Jaxion\Contract\Register\Assets as AssetsContract;
 
+/**
+ * Class Assets
+ *
+ * Provides a consistent interface for registering static assets with WordPress.
+ *
+ * @package Intraxia\Jaxion
+ * @subpackage Register
+ */
 class Assets implements AssetsContract
 {
     /**
@@ -62,7 +70,9 @@ class Assets implements AssetsContract
     private $styles = array();
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param string $url
      */
     public function __construct($url)
     {
@@ -70,7 +80,9 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param bool $debug
      */
     public function setDebug($debug)
     {
@@ -82,7 +94,9 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param array $script
      */
     public function registerScript($script)
     {
@@ -90,7 +104,9 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param array $style
      */
     public function registerStyle($style)
     {
@@ -98,7 +114,7 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function enqueueWebScripts()
     {
@@ -110,7 +126,7 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function enqueueWebStyles()
     {
@@ -122,7 +138,7 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function enqueueAdminScripts()
     {
@@ -134,7 +150,7 @@ class Assets implements AssetsContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function enqueueAdminStyles()
     {

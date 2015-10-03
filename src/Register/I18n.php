@@ -3,6 +3,14 @@ namespace Intraxia\Jaxion\Register;
 
 use Intraxia\Jaxion\Contract\Register\I18n as I18nContract;
 
+/**
+ * Class I18n
+ *
+ * Provides a standard method of loading a plugin's i18n files.
+ *
+ * @package Intraxia\Jaxion
+ * @subpackage Register
+ */
 class I18n implements I18nContract
 {
 
@@ -26,7 +34,9 @@ class I18n implements I18nContract
     );
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param string $path
      */
     public function __construct($path)
     {
@@ -34,7 +44,7 @@ class I18n implements I18nContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadTranslation()
     {

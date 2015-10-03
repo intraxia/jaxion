@@ -20,7 +20,10 @@ class Application extends Container implements ApplicationContract
     protected static $instance = null;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param string $file
+     * @throws ApplicationAlreadyBootedException
      */
     public function __construct($file)
     {
@@ -63,6 +66,7 @@ class Application extends Container implements ApplicationContract
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
+     * @param object $router
      */
     public function routes($router)
     {
@@ -70,7 +74,8 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @codeCoverageIgnore
      */
     public function activate()
@@ -79,16 +84,19 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @codeCoverageIgnore
      */
     public function deactivate()
     {
         // no-op
     }
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param string  $name
+     * @param Closure $class
      */
     public function command($name, Closure $class)
     {
@@ -98,7 +106,10 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return Application
+     * @throws ApplicationNotBootedException
      */
     public static function get()
     {
@@ -110,7 +121,7 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public static function shutdown()
     {

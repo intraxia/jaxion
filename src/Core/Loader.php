@@ -4,6 +4,14 @@ namespace Intraxia\Jaxion\Core;
 use Intraxia\Jaxion\Contract\Core\Container as ContainerContract;
 use Intraxia\Jaxion\Contract\Core\Loader as LoaderContract;
 
+/**
+ * Class Loader
+ *
+ * Iterates over a service container to register its services with their respective WordPres hooks.
+ *
+ * @package Intraxia\Jaxion
+ * @subpackage Core
+ */
 class Loader implements LoaderContract
 {
     /**
@@ -28,7 +36,9 @@ class Loader implements LoaderContract
     protected $container;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param ContainerContract $container
      */
     public function __construct(ContainerContract $container)
     {
@@ -36,7 +46,7 @@ class Loader implements LoaderContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function register()
     {
@@ -59,7 +69,7 @@ class Loader implements LoaderContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function run()
     {
@@ -123,12 +133,12 @@ class Loader implements LoaderContract
     /**
      * Utility to register the actions and hooks into a single collection.
      *
-     * @param array $hooks
+     * @param array  $hooks
      * @param string $hook
      * @param object $service
      * @param string $method
-     * @param int $priority
-     * @param int $accepted_args
+     * @param int    $priority
+     * @param int    $accepted_args
      * @return array
      */
     protected function add($hooks, $hook, $service, $method, $priority, $accepted_args)

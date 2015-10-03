@@ -9,9 +9,10 @@
         "mockery/mockery": "~0.9.4",
         "10up/wp_mock": "0.1.*",
         "scrutinizer/ocular": "~1.1",
-        "squizlabs/php_codesniffer": "~2.3"
+        "intraxia/codestyle": "dev-master"
     },
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "mAAdhaTTah",
@@ -25,12 +26,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Intraxia\\Jaxion\\Test\\": "tests"
+            "Intraxia\\Jaxion\\Test\\": "tests/"
         }
     },
     "scripts": {
-        "sniff": "phpcs -p src/ --standard=PSR2 --report=summary",
-        "clean": "phpcbf -p src/ --standard=PSR2 --report=summary",
+        "sniff": "phpcs --runtime-set installed_paths vendor/wp-coding-standards/wpcs  -p src/ --standard=vendor/intraxia/codestyle/ruleset.xml --report=full",
+        "clean": "phpcbf --runtime-set installed_paths vendor/wp-coding-standards/wpcs -p src/ --standard=vendor/intraxia/codestyle/ruleset.xml --report=full",
         "test": "phpunit"
     }
 }
