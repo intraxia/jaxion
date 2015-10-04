@@ -157,26 +157,15 @@ class Router
             throw new UnknownMethodException;
         }
 
-        // first argument
-        $route = reset($arguments);
+        // array_merge ensures we have 3 elements
+        list($route, $callback, $options) = array_merge($arguments, array(null, null, null));
 
-        if (!$route) {
-            throw new MissingArgumentException;
-        }
-
-        // second argument
-        $callback = next($arguments);
-
-        if (!$callback) {
+        if (!$route || !$callback) {
             throw new MissingArgumentException;
         }
 
         $endpoint = new Endpoint($route, $this->methods[$name], $callback);
 
-        // third argument is optional
-        $options = next($arguments);
-
-        // next returns false if the 3rd element is empty
         if ($options && is_array($options)) {
             $endpoint = $this->setOptions($endpoint, $options);
         }
