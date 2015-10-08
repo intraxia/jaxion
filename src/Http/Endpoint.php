@@ -1,7 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Http;
 
-use Intraxia\Jaxion\Contract\Http\Guard;
+use Intraxia\Jaxion\Contract\Http\Guard as GuardContract;
 use Intraxia\Jaxion\Contract\Http\Filter;
 use Intraxia\Jaxion\Utility\Str;
 
@@ -39,7 +39,7 @@ class Endpoint
     /**
      * Endpoint's permission guard.
      *
-     * @var Guard
+     * @var GuardContract
      */
     protected $guard;
 
@@ -114,11 +114,11 @@ class Endpoint
     /**
      * Sets the endpoint's permission guard.
      *
-     * @param Guard $guard
+     * @param GuardContract $guard
      *
      * @return $this
      */
-    public function setGuard(Guard $guard)
+    public function setGuard(GuardContract $guard)
     {
         $this->guard = $guard;
 
