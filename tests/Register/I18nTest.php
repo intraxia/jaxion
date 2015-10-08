@@ -15,7 +15,7 @@ class I18nTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         WP_Mock::setUp();
-        $this->i18n = new I18n(__DIR__);
+        $this->i18n = new I18n(dirname(__DIR__));
     }
 
     public function testShouldLoadTextDomain()
