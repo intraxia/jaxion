@@ -17,6 +17,16 @@ use WP_Error;
 class Guard implements GuardContract
 {
     /**
+     * Default options.
+     *
+     * @var array
+     */
+    protected $defaults = array(
+        'rule'     => 'public',
+        'callback' => false,
+    );
+
+    /**
      * Guard options.
      *
      * @var array
@@ -55,7 +65,7 @@ class Guard implements GuardContract
             return $this->{$method}();
         }
 
-        // disable by default
+        // disable in rule is misconfigused
         // @todo set up internal translations
         // @todo also, this error message kinda sucks
         return new WP_Error('500', __('Guard failure', 'jaxion'));
@@ -81,9 +91,6 @@ class Guard implements GuardContract
     protected function setDefaults($options)
     {
         // these are the valid options
-        return wp_parse_args($options, array(
-            'rule' => 'public', // available to public by default
-            'callback' => false,
-        ));
+        return wp_parse_args($options, $this->defaults);
     }
 }
