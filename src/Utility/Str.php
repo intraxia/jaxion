@@ -19,6 +19,14 @@ class Str
      */
     protected static $studlyCache = array();
 
+
+    /**
+     * The cache of camel-cased words.
+     *
+     * @var array
+     */
+    protected static $camelCache = array();
+
     /**
      * Determine if a given string starts with a given substring.
      *
@@ -51,6 +59,21 @@ class Str
             }
         }
         return false;
+    }
+
+    /**
+     * Convert a value to camel case.
+     *
+     * @param  string $value
+     * @return string
+     */
+    public static function camel($value)
+    {
+        if (isset(static::$camelCache[$value])) {
+            return static::$camelCache[$value];
+        }
+
+        return static::$camelCache[$value] = lcfirst(static::studly($value));
     }
 
     /**
