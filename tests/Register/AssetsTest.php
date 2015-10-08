@@ -1,5 +1,5 @@
 <?php
-namespace Intraxia\Jaxion\Test;
+namespace Intraxia\Jaxion\Test\Register;
 
 use WP_Mock;
 use Intraxia\Jaxion\Register\Assets;

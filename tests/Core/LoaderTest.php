@@ -1,5 +1,5 @@
 <?php
-namespace Intraxia\Jaxion\Test;
+namespace Intraxia\Jaxion\Test\Core;
 
 use Intraxia\Jaxion\Core\Loader;
 use Mockery;
