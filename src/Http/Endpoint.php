@@ -2,7 +2,7 @@
 namespace Intraxia\Jaxion\Http;
 
 use Intraxia\Jaxion\Contract\Http\Guard as GuardContract;
-use Intraxia\Jaxion\Contract\Http\Filter;
+use Intraxia\Jaxion\Contract\Http\Filter as FilterContract;
 use Intraxia\Jaxion\Utility\Str;
 
 /**
@@ -46,7 +46,7 @@ class Endpoint
     /**
      * Endpoint's arguments filter.
      *
-     * @var Filter
+     * @var FilterContract
      */
     protected $filter;
 
@@ -128,11 +128,11 @@ class Endpoint
     /**
      * Sets the endpoint's arguments filter.
      *
-     * @param Filter $filter
+     * @param FilterContract $filter
      *
      * @return $this
      */
-    public function setFilter(Filter $filter)
+    public function setFilter(FilterContract $filter)
     {
         $this->filter = $filter;
 
