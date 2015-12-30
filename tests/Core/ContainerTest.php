@@ -2,6 +2,7 @@
 namespace Intraxia\Jaxion\Test\Core;
 
 use Intraxia\Jaxion\Core\Container;
+use Mockery;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase {
 	/**
@@ -104,6 +105,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertFalse( $this->container->has( 'key' ) );
 	}
 
+	public function test_should_register_provider() {
+		$provider = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\ServiceProvider' );
+		$provider->shouldReceive( 'register' )
+			->once()
+			->with( $this->container );
+
+		$this->container->register( $provider );
+	}
+
 	public function test_should_implement_array_access() {
 		$this->container['key'] = function () {
 			return 'value';
@@ -132,5 +142,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 		}
 
 		$this->assertSame( 2, $count );
+	}
+
+	protected function tearDown() {
+		parent::tearDown();
+		Mockery::close();
 	}
 }

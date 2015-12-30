@@ -2,6 +2,7 @@
 namespace Intraxia\Jaxion\Core;
 
 use Intraxia\Jaxion\Contract\Core\Container as ContainerContract;
+use Intraxia\Jaxion\Contract\Core\ServiceProvider;
 
 /**
  * Class Container
@@ -34,6 +35,13 @@ class Container implements ContainerContract {
 	private $aliases = array();
 
 	/**
+	 * Array of classes registered on the container.
+	 *
+	 * @var <string, true>[]
+	 */
+	private $classes = array();
+
+	/**
 	 * Current position in the loop.
 	 *
 	 * @var int
@@ -46,6 +54,26 @@ class Container implements ContainerContract {
 	 * @var string[]
 	 */
 	private $keys = array();
+
+	/**
+	 * Create a new container with the given providers.
+	 *
+	 * Providers can be instances or the class of the provider as a string.
+	 *
+	 * @param ServiceProvider[]|string[] $providers
+	 */
+	public function __construct( array $providers = array() ) {
+		foreach ( $providers as $provider ) {
+			if ( is_string( $provider ) && class_exists( $provider ) ) {
+				$provider = new $provider;
+			}
+
+			if ( $provider instanceof ServiceProvider ) {
+				$this->register( $provider );
+			}
+		}
+	}
+
 
 	/**
 	 * {@inheritdoc}
@@ -180,6 +208,19 @@ class Container implements ContainerContract {
 			 */
 			unset( $this->aliases[ $alias ] );
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param ServiceProvider $provider
+	 *
+	 * @return $this
+	 */
+	public function register( ServiceProvider $provider ) {
+		$provider->register( $this );
+
+		return $this;
 	}
 
 	/**

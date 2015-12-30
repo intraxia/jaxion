@@ -61,4 +61,16 @@ interface Container extends \ArrayAccess, \Iterator {
 	 * @return bool
 	 */
 	public function remove( $alias );
+
+	/**
+	 * Registers a service provider with the container.
+	 *
+	 * A service provider is responsible for defining and generating services that will be bound
+	 * into the container. This keeps the container and Application responsible solely for maintaining
+	 * the generated services and the API for registering them and allows for a clean interface for
+	 * adding new services to the container.
+	 *
+	 * @param ServiceProvider $provider
+	 */
+	public function register( ServiceProvider $provider );
 }
