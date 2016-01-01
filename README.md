@@ -48,6 +48,12 @@ If you discover any security related issues, please email jamesorodig@gmail.com 
 
 - [James DiGioia][link-author]
 
+## Legacy Branch
+
+A quick note about the `legacy-psr2` branch:
+
+In a previous incarnation (before hitting a 0.1.0), Jaxion was developed using [PSR-2 coding standards]. Upon further reflection, in order to encourage uptake in the WordPress community, I rewrote the framework in the [WordPress coding standards]. This branch will exist until Jaxion hits a 1.0.0 for compatibility with Packagist, where it was registered, in case anyone had begun using it.
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
@@ -65,3 +71,6 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-code-quality]: https://scrutinizer-ci.com/g/intraxia/jaxion
 [link-downloads]: https://packagist.org/packages/intraxia/jaxion
 [link-author]: https://github.com/mAAdhaTTah
+
+[PSR-2 coding standards]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
+[WordPress coding standards]: https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/
