@@ -119,7 +119,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 			return 'value';
 		};
 
-		$this->assertEquals( $this->container['key'], 'value' );
+		$this->assertSame( $this->container['key'], 'value' );
 		$this->assertTrue( isset( $this->container['key'] ) );
 
 		unset( $this->container['key'] );
@@ -137,7 +137,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 
 		foreach ( $this->container as $key => $value ) {
 			$this->assertContains( $key, array( 'key1', 'key2' ) );
-			$this->assertEquals( 'value', $value );
+			$this->assertSame( 'value', $value );
 			$count ++;
 		}
 

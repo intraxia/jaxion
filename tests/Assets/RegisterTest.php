@@ -23,11 +23,11 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assets->set_debug( true );
 
-		$this->assertEquals( '.min', $min->getValue( $this->assets ) );
+		$this->assertSame( '.min', $min->getValue( $this->assets ) );
 
 		$this->assets->set_debug( false );
 
-		$this->assertEquals( '', $min->getValue( $this->assets ) );
+		$this->assertSame( '', $min->getValue( $this->assets ) );
 	}
 
 	public function test_should_enqueue_web_script() {
