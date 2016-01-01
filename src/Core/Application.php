@@ -4,7 +4,7 @@ use Intraxia\Jaxion\Contract\Core\Application as ApplicationContract;
 use Intraxia\Jaxion\Contract\Core\HasActions;
 use Intraxia\Jaxion\Contract\Core\HasFilters;
 use Intraxia\Jaxion\Contract\Core\Loader as LoaderContract;
-use WP_CLI;
+use UnexpectedValueException;
 
 /**
  * Class Application
@@ -19,7 +19,10 @@ class Application extends Container implements ApplicationContract {
 	protected static $instance = null;
 
 	/**
-	 * {@inheritdoc}
+	 * Instantiates a new Application container.
+	 *
+	 * The Application constructor enforces the presence of of a single instance
+	 * of the Application. If an instance already exists, an Exception will be thrown.
 	 *
 	 * @param string $file
 	 * @param array  $providers
@@ -27,7 +30,7 @@ class Application extends Container implements ApplicationContract {
 	 * @throws ApplicationAlreadyBootedException
 	 */
 	public function __construct( $file, array $providers = array() ) {
-		if ( static::$instance !== null ) {
+		if ( null !== static::$instance ) {
 			throw new ApplicationAlreadyBootedException;
 		}
 
@@ -44,12 +47,14 @@ class Application extends Container implements ApplicationContract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws UnexpectedValueException
 	 */
 	public function boot() {
 		$loader = $this->fetch( 'loader' );
 
 		if ( ! $loader instanceof LoaderContract ) {
-			throw new \UnexpectedValueException;
+			throw new UnexpectedValueException;
 		}
 
 		foreach ( $this as $alias => $value ) {
@@ -90,7 +95,7 @@ class Application extends Container implements ApplicationContract {
 	 * @throws ApplicationNotBootedException
 	 */
 	public static function instance() {
-		if ( static::$instance === null ) {
+		if ( null === static::$instance ) {
 			throw new ApplicationNotBootedException;
 		}
 
@@ -101,7 +106,7 @@ class Application extends Container implements ApplicationContract {
 	 * {@inheritDoc}
 	 */
 	public static function shutdown() {
-		if ( static::$instance !== null ) {
+		if ( null !== static::$instance ) {
 			static::$instance = null;
 		}
 	}

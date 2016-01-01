@@ -86,7 +86,7 @@ class Post extends Base {
 		return 'post_content';
 	}
 
-	/**¡
+	/**
 	 * Excerpt property maps to post_excerpt.
 	 *
 	 * @return string

@@ -21,7 +21,7 @@ class Str {
 	 */
 	public static function starts_with( $haystack, $needles ) {
 		foreach ( (array) $needles as $needle ) {
-			if ( $needle != '' && strpos( $haystack, $needle ) === 0 ) {
+			if ( '' !== $needle && 0 === strpos( $haystack, $needle ) ) {
 				return true;
 			}
 		}
@@ -39,7 +39,7 @@ class Str {
 	 */
 	public static function ends_with( $haystack, $needles ) {
 		foreach ( (array) $needles as $needle ) {
-			if ( (string) $needle === substr( $haystack, - strlen( $needle ) ) ) {
+			if ( substr( $haystack, - strlen( $needle ) ) === (string) $needle ) {
 				return true;
 			}
 		}

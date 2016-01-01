@@ -5,18 +5,6 @@ use Intraxia\Jaxion\Core\ApplicationNotBootedException;
 
 interface Application {
 	/**
-	 * Instantiates a new Application container.
-	 *
-	 * The Application constructor enforces the presence of of a single instance
-	 * of the Application. If an instance already exists, an Exception will be thrown.
-	 *
-	 * @param string $file
-	 *
-	 * @throws \Intraxia\Jaxion\Core\ApplicationAlreadyBootedException
-	 */
-	public function __construct( $file );
-
-	/**
 	 * Starts up the Application.
 	 *
 	 * Retrieves the Application's loader instance, and registers all of the Application's

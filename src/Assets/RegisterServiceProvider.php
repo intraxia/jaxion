@@ -4,9 +4,16 @@ namespace Intraxia\Jaxion\Assets;
 use Intraxia\Jaxion\Contract\Core\Container;
 use Intraxia\Jaxion\Contract\Core\ServiceProvider;
 
+/**
+ * Class RegisterServiceProvider
+ * @package Intraxia\Jaxion
+ * @subpackage Assets
+ */
 class RegisterServiceProvider implements ServiceProvider {
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @param Container $container
 	 */
 	public function register( Container $container ) {
 		$container->define(

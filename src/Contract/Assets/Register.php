@@ -18,14 +18,14 @@ interface Register extends HasActions {
 	/**
 	 * Provides a method to register new scripts outside of the constructor.
 	 *
-	 * @param $script
+	 * @param array $script
 	 */
 	public function register_script( $script );
 
 	/**
 	 * Provides a method to register new styles outside of the constructor.
 	 *
-	 * @param $style
+	 * @param array $style
 	 */
 	public function register_style( $style );
 

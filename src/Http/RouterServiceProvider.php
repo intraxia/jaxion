@@ -4,9 +4,17 @@ namespace Intraxia\Jaxion\Http;
 use Intraxia\Jaxion\Contract\Core\Container;
 use Intraxia\Jaxion\Contract\Core\ServiceProvider;
 
+/**
+ * Class RouterServiceProvider
+ *
+ * @package Intraxia\Jaxion
+ * @subpackage Http
+ */
 class RouterServiceProvider implements ServiceProvider {
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @param Container $container
 	 */
 	public function register( Container $container ) {
 		$container->define( array( 'router' => 'Intraxia\Jaxion\Http\Router' ), $router = new Router );
