@@ -70,18 +70,26 @@ class Router implements HasActions {
 	 * Sets the resource's vendor prefix.
 	 *
 	 * @param string $vendor
+	 *
+	 * @return $this
 	 */
 	public function set_vendor( $vendor ) {
 		$this->vendor = $vendor;
+
+		return $this;
 	}
 
 	/**
 	 * Sets the resource's version.
 	 *
 	 * @param int $version
+	 *
+	 * @return $this
 	 */
 	public function set_version( $version ) {
 		$this->version = $version;
+
+		return $this;
 	}
 
 	/**
