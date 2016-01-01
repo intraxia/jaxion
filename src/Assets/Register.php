@@ -61,7 +61,7 @@ class Register implements RegisterContract {
 	 */
 	public function __construct( $url, $version = null ) {
 		$this->url = $url;
-		$this->version = $version;
+		$this->version = $version ? : null; // Empty string should remain null.
 	}
 
 	/**
