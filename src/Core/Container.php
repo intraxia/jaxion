@@ -14,6 +14,15 @@ use Intraxia\Jaxion\Contract\Core\ServiceProvider;
  */
 class Container implements ContainerContract {
 	/**
+	 * ServiceProvider names to register with the container.
+	 *
+	 * Can be overwritten to include predefined providers.
+	 *
+	 * @var string[]
+	 */
+	protected $providers = array();
+
+	/**
 	 * Registered definitions.
 	 *
 	 * @var mixed[]
@@ -63,6 +72,9 @@ class Container implements ContainerContract {
 	 * @param ServiceProvider[]|string[] $providers
 	 */
 	public function __construct( array $providers = array() ) {
+		// array_unique ensures we only register each provider once.
+		$providers = array_unique( array_merge( $this->providers, $providers ) );
+
 		foreach ( $providers as $provider ) {
 			if ( is_string( $provider ) && class_exists( $provider ) ) {
 				$provider = new $provider;
@@ -222,6 +234,7 @@ class Container implements ContainerContract {
 	 * @return $this
 	 */
 	public function register( ServiceProvider $provider ) {
+		// @todo make sure provider is only registered once
 		$provider->register( $this );
 
 		return $this;
