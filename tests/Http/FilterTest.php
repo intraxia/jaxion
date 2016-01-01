@@ -62,6 +62,14 @@ class FilterTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( $filter->validate_integer( 1234567890 ) );
 	}
 
+	public function test_non_integer_shouldnt_validate() {
+		$filter = new Filter;
+
+		foreach ( array( 'text', '' ) as $value ) {
+			$this->assertFalse( $filter->validate_integer( $value ), sprintf( '%s is erroneously valid.', $value ) );
+		}
+	}
+
 	public function test_integer_string_should_be_cast() {
 		$filter = new Filter();
 
@@ -72,6 +80,19 @@ class FilterTest extends PHPUnit_Framework_TestCase {
 		$filter = new Filter();
 
 		$this->assertSame( 1234567890, $filter->make_integer( 1234567890 ) );
+	}
+
+	public function test_should_validate_oneof() {
+		$filter = new Filter( array(
+			'param' => 'oneof:a,b,c',
+		) );
+
+		$rules = $filter->rules();
+
+		$this->assertTrue( call_user_func( $rules['param']['validate_callback'], 'a' ) );
+		$this->assertTrue( call_user_func( $rules['param']['validate_callback'], 'b' ) );
+		$this->assertTrue( call_user_func( $rules['param']['validate_callback'], 'c' ) );
+		$this->assertFalse( call_user_func( $rules['param']['validate_callback'], 'f' ) );
 	}
 
 	public function test_should_take_multiple_rules() {

@@ -56,6 +56,8 @@ class Filter implements FilterContract {
 	 * @param string $validation
 	 *
 	 * @return array
+	 *
+	 * @todo The next rule added needs to refactor this process.
 	 */
 	protected function parse_validation( $validation ) {
 		$validation = explode( '|', $validation );
@@ -64,9 +66,24 @@ class Filter implements FilterContract {
 
 		foreach ( $validation as $rule ) {
 			if ( 0 === strpos( $rule, 'default' ) ) {
-				$ruleArr = explode( ':', $rule );
+				$rule_arr = explode( ':', $rule );
 
-				$rules['default'] = count( $ruleArr ) === 2 ? array_pop( $ruleArr ) : '';
+				$rules['default'] = count( $rule_arr ) === 2 ? array_pop( $rule_arr ) : '';
+			}
+
+			if ( 0 === strpos( $rule, 'oneof' ) ) {
+				list( $rule, $values ) = explode( ':', $rule );
+
+				$values   = explode( ',', $values );
+				$callback = function ( $value ) use ( $values ) {
+					if ( in_array( $value, $values, true ) ) {
+						return true;
+					}
+
+					return false;
+				};
+
+				$rules['validate_callback'] = isset( $rules['validate_callback'] ) ? $this->add_callback( $rules['validate_callback'], $callback ) : $callback;
 			}
 
 			switch ( $rule ) {
@@ -74,8 +91,11 @@ class Filter implements FilterContract {
 					$rules['required'] = true;
 					break;
 				case 'integer':
-					$rules['validate_callback'] = array( $this, 'validate_integer' );
-					$rules['sanitize_callback'] = array( $this, 'make_integer' );
+					$callback                   = array( $this, 'validate_integer' );
+					$rules['validate_callback'] = isset( $rules['validate_callback'] ) ? $this->add_callback( $rules['validate_callback'], $callback ) : $callback;
+
+					$callback                   = array( $this, 'make_integer' );
+					$rules['sanitize_callback'] = isset( $rules['sanitize_callback'] ) ? $this->add_callback( $rules['sanitize_callback'], $callback ) : $callback;
 					break;
 			}
 		}
@@ -103,5 +123,23 @@ class Filter implements FilterContract {
 	 */
 	public function make_integer( $value ) {
 		return (int) $value;
+	}
+
+	/**
+	 * Creates a new callback that connects the previous and next callback.
+	 *
+	 * @param callable $previous
+	 * @param callable $next
+	 *
+	 * @return \Closure;
+	 */
+	private function add_callback( $previous, $next ) {
+		return function ( $value ) use ( $previous, $next ) {
+			if ( call_user_func( $previous, $value ) ) {
+				return call_user_func( $next, $value );
+			}
+
+			return false;
+		};
 	}
 }
