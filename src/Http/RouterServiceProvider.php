@@ -12,12 +12,21 @@ use Intraxia\Jaxion\Contract\Core\ServiceProvider;
  */
 class RouterServiceProvider implements ServiceProvider {
 	/**
+	 * Container to register on.
+	 *
+	 * @var Container
+	 */
+	protected $container;
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @param Container $container
 	 */
 	public function register( Container $container ) {
-		$container->define( array( 'router' => 'Intraxia\Jaxion\Http\Router' ), $router = new Router );
+		$this->container = $container;
+
+		$this->container->define( array( 'router' => 'Intraxia\Jaxion\Http\Router' ), $router = new Router );
 
 		$this->add_routes( $router );
 	}
