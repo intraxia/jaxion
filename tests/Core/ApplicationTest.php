@@ -128,13 +128,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		WP_Mock::wpPassthruFunction( 'plugin_dir_url', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'plugin_dir_path', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'plugin_basename', array( 'times' => 1 ) );
-		WP_Mock::wpPassthruFunction(
-			'get_plugin_data',
-			array(
-				'times' => 1,
-				'return' => array( 'Version' => '0.1.0' )
-			)
-		);
+
 		WP_Mock::wpPassthruFunction( 'load_plugin_textdomain', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'register_activation_hook', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'register_deactivation_hook', array( 'times' => 1 ) );

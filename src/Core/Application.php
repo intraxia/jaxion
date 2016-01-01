@@ -12,6 +12,11 @@ use UnexpectedValueException;
  */
 class Application extends Container implements ApplicationContract {
 	/**
+	 * Define plugin version on Application.
+	 */
+	const VERSION = '';
+
+	/**
 	 * Singleton instance of the Application object
 	 *
 	 * @var Application
@@ -120,9 +125,7 @@ class Application extends Container implements ApplicationContract {
 		$this->share( 'url', plugin_dir_url( $file ) );
 		$this->share( 'path', plugin_dir_path( $file ) );
 		$this->share( 'basename', plugin_basename( $file ) );
-
-		$plugin_data = get_plugin_data( $file, false, false );
-		$this->share( 'version', isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : null );
+		$this->share( 'version', static::VERSION );
 	}
 
 	/**
