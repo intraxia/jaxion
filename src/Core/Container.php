@@ -104,7 +104,7 @@ class Container implements ContainerContract {
 		}
 
 		if ( isset( $this->aliases[ $alias ] ) ) {
-			throw new DefinedAliasException;
+			throw new DefinedAliasException( $alias );
 		}
 
 		$this->aliases[ $alias ]     = true;
@@ -164,7 +164,7 @@ class Container implements ContainerContract {
 		}
 
 		if ( ! isset( $this->aliases[ $alias ] ) ) {
-			throw new UndefinedAliasException;
+			throw new UndefinedAliasException( $alias );
 		}
 
 		$value = $this->definitions[ $alias ];
