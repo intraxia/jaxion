@@ -41,13 +41,14 @@ class Application extends Container implements ApplicationContract {
 
 		static::$instance = $this;
 
-		parent::__construct( $providers );
 		$this->register_constants( $file );
 		$this->register_core_services();
 		$this->load_i18n();
 
 		register_activation_hook( $file, array( $this, 'activate' ) );
 		register_deactivation_hook( $file, array( $this, 'deactivate' ) );
+
+		parent::__construct( $providers );
 	}
 
 	/**
