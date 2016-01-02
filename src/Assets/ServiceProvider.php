@@ -11,11 +11,20 @@ use Intraxia\Jaxion\Contract\Core\ServiceProvider as ServiceProviderContract;
  */
 class ServiceProvider implements ServiceProviderContract {
 	/**
+	 * Container to register with.
+	 *
+	 * @var Container
+	 */
+	protected $container;
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @param Container $container
 	 */
 	public function register( Container $container ) {
+		$this->container = $container;
+
 		$container->define(
 			array( 'register' => 'Intraxia\Jaxion\Contract\Assets\Register' ),
 			$register = new Register( $container->fetch( 'url' ), $container->fetch( 'version' ) )
