@@ -181,6 +181,10 @@ class Register implements RegisterContract {
 			);
 
 			if ( isset( $script['localize'] ) ) {
+				if ( is_callable( $script['localize'] ) ) { // @todo make all properties callables
+					$script['localize'] = call_user_func( $script['localize'] );
+				}
+
 				wp_localize_script(
 					$script['handle'],
 					$script['localize']['name'],
