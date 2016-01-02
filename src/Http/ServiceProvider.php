@@ -2,7 +2,7 @@
 namespace Intraxia\Jaxion\Http;
 
 use Intraxia\Jaxion\Contract\Core\Container;
-use Intraxia\Jaxion\Contract\Core\ServiceProvider;
+use Intraxia\Jaxion\Contract\Core\ServiceProvider as ServiceProviderContract;
 
 /**
  * Class RouterServiceProvider
@@ -10,7 +10,7 @@ use Intraxia\Jaxion\Contract\Core\ServiceProvider;
  * @package Intraxia\Jaxion
  * @subpackage Http
  */
-class RouterServiceProvider implements ServiceProvider {
+class ServiceProvider implements ServiceProviderContract {
 	/**
 	 * Container to register on.
 	 *

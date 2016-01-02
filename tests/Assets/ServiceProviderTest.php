@@ -1,12 +1,12 @@
 <?php
 namespace Intraxia\Jaxion\Test\Assets;
 
-use Intraxia\Jaxion\Assets\RegisterServiceProvider;
+use Intraxia\Jaxion\Assets\ServiceProvider;
 use Mockery;
 
-class RegisterServiceProviderTest extends \PHPUnit_Framework_TestCase {
+class ServiceProviderTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_define_register_on_container() {
-		$provider  = new RegisterServiceProvider;
+		$provider  = new ServiceProvider;
 		$container = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\Container' );
 		$container->shouldReceive( 'fetch' )
 			->twice()

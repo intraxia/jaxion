@@ -2,14 +2,14 @@
 namespace Intraxia\Jaxion\Assets;
 
 use Intraxia\Jaxion\Contract\Core\Container;
-use Intraxia\Jaxion\Contract\Core\ServiceProvider;
+use Intraxia\Jaxion\Contract\Core\ServiceProvider as ServiceProviderContract;
 
 /**
- * Class RegisterServiceProvider
+ * Class AssetsServiceProvider
  * @package Intraxia\Jaxion
  * @subpackage Assets
  */
-class RegisterServiceProvider implements ServiceProvider {
+class ServiceProvider implements ServiceProviderContract {
 	/**
 	 * {@inheritDoc}
 	 *
