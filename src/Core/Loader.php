@@ -3,6 +3,7 @@ namespace Intraxia\Jaxion\Core;
 
 use Intraxia\Jaxion\Contract\Core\HasActions;
 use Intraxia\Jaxion\Contract\Core\HasFilters;
+use Intraxia\Jaxion\Contract\Core\HasShortcode;
 use Intraxia\Jaxion\Contract\Core\Loader as LoaderContract;
 
 /**
@@ -52,7 +53,7 @@ class Loader implements LoaderContract {
 	}
 
 	/**
-	 * Registers a single Service's actions with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @param HasActions $service
 	 */
@@ -70,7 +71,7 @@ class Loader implements LoaderContract {
 	}
 
 	/**
-	 * Registers a single Service's filters with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @param HasFilters $service
 	 */
@@ -85,6 +86,15 @@ class Loader implements LoaderContract {
 				isset( $filter['args'] ) ? $filter['args'] : 1
 			);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param HasShortcode $service
+	 */
+	public function register_shortcode( HasShortcode $service ) {
+		add_shortcode( $service->shortcode_name(), array( $service, 'do_shortcode' ) );
 	}
 
 	/**

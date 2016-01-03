@@ -24,9 +24,19 @@ interface Loader {
 	 * Registers the service's filters with the loader.
 	 *
 	 * Filters retrieved from the service are registered with the Loader.
-	 * When the loader runs, this actions are registered with WordPress.
+	 * When the loader runs, these filters are registered with WordPress.
 	 *
 	 * @param HasFilters $service
 	 */
 	public function register_filters( HasFilters $service );
+
+	/**
+	 * Registers the service's shortcode with the loader.
+	 *
+	 * Service's method definitions are passed into the add_shortcode hook
+	 * in WordPress to register the shortcode.
+	 *
+	 * @param HasShortcode $service
+	 */
+	public function register_shortcode( HasShortcode $service );
 }

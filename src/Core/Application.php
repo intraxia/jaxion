@@ -3,6 +3,7 @@
 use Intraxia\Jaxion\Contract\Core\Application as ApplicationContract;
 use Intraxia\Jaxion\Contract\Core\HasActions;
 use Intraxia\Jaxion\Contract\Core\HasFilters;
+use Intraxia\Jaxion\Contract\Core\HasShortcode;
 use Intraxia\Jaxion\Contract\Core\Loader as LoaderContract;
 use UnexpectedValueException;
 
@@ -70,6 +71,10 @@ class Application extends Container implements ApplicationContract {
 
 			if ( $value instanceof HasFilters ) {
 				$loader->register_filters( $value );
+			}
+
+			if ( $value instanceof HasShortcode ) {
+				$loader->register_shortcode( $value );
 			}
 		}
 

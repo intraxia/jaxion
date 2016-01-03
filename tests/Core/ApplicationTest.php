@@ -124,6 +124,28 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		$app->boot();
 	}
 
+	public function test_should_register_shortcode() {
+		$this->mock_constructor_functions();
+
+		$app     = new App( __FILE__ );
+		$shortcode = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\HasShortcode' );
+
+		$app->remove( 'loader' )
+			->define( 'loader', function () use ( $shortcode ) {
+				$loader = Mockery::mock( 'Intraxia\Jaxion\Core\Loader' );
+				$loader->shouldReceive( 'register_shortcode' )
+					->once()
+					->with( $shortcode );
+
+				WP_Mock::expectActionAdded( 'plugins_loaded', array( $loader, 'run' ) );
+
+				return $loader;
+			} );
+		$app->define( 'filters', $shortcode );
+
+		$app->boot();
+	}
+
 	protected function mock_constructor_functions() {
 		WP_Mock::wpPassthruFunction( 'plugin_dir_url', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'plugin_dir_path', array( 'times' => 1 ) );
