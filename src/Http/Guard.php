@@ -74,7 +74,7 @@ class Guard implements GuardContract {
 	 * @return bool|WP_Error
 	 */
 	protected function can_edit_others_posts() {
-		return current_user_can( 'edit_others_posts' ) ?: new WP_Error( '401', __( 'Unauthorized user', 'jaxion' ) );
+		return current_user_can( 'edit_others_posts' ) ?: new WP_Error( 'unauthorized', __( 'Unauthorized user', 'jaxion' ), array( 'status' => 401 ) );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Guard implements GuardContract {
 	 * @return bool|WP_Error
 	 */
 	protected function user_logged_in() {
-		return is_user_logged_in() ?: new WP_Error( '401', __( 'Unauthorized user', 'jaxion' ) );
+		return is_user_logged_in() ?: new WP_Error( 'unauthorized', __( 'Unauthorized user', 'jaxion' ), array( 'status' => 401 ) );
 	}
 
 	/**
