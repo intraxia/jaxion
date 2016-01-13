@@ -5,6 +5,7 @@ use InvalidArgumentException;
 
 /**
  * Class DefinedAliasException
+ *
  * @package Intraxia\Jaxion
  * @subpackage Core
  */

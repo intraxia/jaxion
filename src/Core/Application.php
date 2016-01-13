@@ -9,6 +9,7 @@ use UnexpectedValueException;
 
 /**
  * Class Application
+ *
  * @package Intraxia\Jaxion
  */
 class Application extends Container implements ApplicationContract {

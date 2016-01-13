@@ -6,6 +6,7 @@ use Intraxia\Jaxion\Contract\Core\ServiceProvider as ServiceProviderContract;
 
 /**
  * Class AssetsServiceProvider
+ *
  * @package Intraxia\Jaxion
  * @subpackage Assets
  */
