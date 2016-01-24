@@ -27,7 +27,7 @@ class ServiceProvider implements ServiceProviderContract {
 		$this->container = $container;
 
 		$container->define(
-			array( 'register' => 'Intraxia\Jaxion\Contract\Assets\Register' ),
+			array( 'assets' => 'Intraxia\Jaxion\Contract\Assets\Register' ),
 			$register = new Register( $container->fetch( 'url' ), $container->fetch( 'version' ) )
 		);
 
