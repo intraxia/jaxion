@@ -14,14 +14,14 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase {
 		$container->shouldReceive( 'define' )
 			->once()
 			->with(
-				array( 'register' => 'Intraxia\Jaxion\Contract\Assets\Register' ),
+				array( 'assets' => 'Intraxia\Jaxion\Contract\Assets\Register' ),
 				Mockery::type( 'Intraxia\Jaxion\Contract\Assets\Register' )
 			);
 
 		$provider->register( $container );
 	}
 
-	protected function tearDown() {
+	public function tearDown() {
 		parent::tearDown();
 		Mockery::close();
 	}
