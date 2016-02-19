@@ -1,7 +1,6 @@
 <?php
 namespace Intraxia\Jaxion\Model;
 
-use Intraxia\Jaxion\Utility\Str;
 use stdClass;
 use WP_Post;
 
@@ -23,6 +22,16 @@ abstract class Base {
 	 * @var array
 	 */
 	private $attributes = array(
+		'table' => array(),
+		'post'  => null,
+	);
+
+	/**
+	 * Model's original attributes.
+	 *
+	 * @var array
+	 */
+	private $original = array(
 		'table' => array(),
 		'post'  => null,
 	);
@@ -89,6 +98,15 @@ abstract class Base {
 	}
 
 	/**
+	 * Get the model's original attributes.
+	 *
+	 * @return array
+	 */
+	public function get_original_attributes() {
+		return $this->original['table'];
+	}
+
+	/**
 	 * Get the model's underlying post.
 	 *
 	 * Returns the underlying WP_Post object for the model, representing
@@ -102,6 +120,15 @@ abstract class Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the model's original underlying post.
+	 *
+	 * @return WP_Post
+	 */
+	public function get_original_post() {
+		return $this->original['post'];
 	}
 
 	/**
@@ -144,6 +171,21 @@ abstract class Base {
 		}
 
 		$this->attributes['table'][ $name ] = $value;
+	}
+
+	/**
+	 * Syncs the current attributes to the model's original.
+	 *
+	 * @return $this
+	 */
+	public function sync_original() {
+		$this->original = $this->attributes;
+
+		if ( $this->attributes['post'] instanceof WP_Post ) {
+			$this->original['post'] = clone $this->attributes['post'];
+		}
+
+		return $this;
 	}
 
 	/**
