@@ -222,6 +222,17 @@ abstract class Base {
 		return $this;
 	}
 
+	/**
+	 * Retrieves all the attribute keys for the model.
+	 *
+	 * @todo memoize this method
+	 *
+	 * @return array
+	 */
+	public function get_attribute_keys() {
+		return array_unique( array_merge( $this->fillable, $this->guarded, $this->hidden, $this->visible ) );
+	}
+
 		}
 
 	}
@@ -394,6 +405,28 @@ abstract class Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clears all the current attributes from the model.
+	 *
+	 * This does not touch the model's original attributes, and will
+	 * only clear fillable attributes, unless the model is unguarded.
+	 *
+	 * @return $this
+	 */
+	public function clear() {
+		$keys = $this->get_attribute_keys();
+
+		if ( ! $keys ) {
+			$keys = array_keys( $this->attributes['table'] );
+		}
+
+		foreach ( $keys as $key ) {
+			$this->set_attribute( $key, null );
+		}
+
+		return $this;
 	}
 
 	/**

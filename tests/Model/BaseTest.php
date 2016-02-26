@@ -75,6 +75,21 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNotSame( $model->get_original_post(), $model->get_underlying_post() );
 	}
 
+	public function test_should_clear_current_model_attributes() {
+		$model = new MetaBase( array(
+			'test' => 'value',
+			'post' => $post = new WP_Post,
+		) );
+
+		$model->clear();
+
+		$this->setExpectedException( 'Intraxia\Jaxion\Model\PropertyDoesNotExistException' );
+
+		$model->get_attribute( 'test' );
+
+		$this->assertSame( $post, $model->get_underlying_post() );
+	}
+
 	public function tearDown() {
 		parent::tearDown();
 		Mockery::close();
