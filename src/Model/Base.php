@@ -69,6 +69,38 @@ abstract class Base {
 	protected $fillable = array();
 
 	/**
+	 * Properties which cannot be automatically filled on the model.
+	 *
+	 * If the model is unguarded, these properties can be filled.
+	 *
+	 * @var array
+	 */
+	protected $guarded = array();
+
+	/**
+	 * Properties which should not be serialized.
+	 *
+	 * @var array
+	 */
+	protected $hidden = array();
+
+	/**
+	 * Properties which should be serialized.
+	 *
+	 * @var array
+	 */
+	protected $visible = array();
+
+	/**
+	 * Whether the model's properties are guarded.
+	 *
+	 * When false, allows guarded properties to be filled.
+	 *
+	 * @var bool
+	 */
+	protected $is_guarded = true;
+
+	/**
 	 * Constructs a new model with provided attributes.
 	 *
 	 * If 'post' is passed as one of the attributes, the underlying post
@@ -209,6 +241,11 @@ abstract class Base {
 			return true;
 		}
 
+		// If this model isn't guarded, everything is fillable.
+		if ( ! $this->is_guarded ) {
+			return true;
+		}
+
 		return in_array( $name, $this->fillable );
 	}
 
@@ -313,5 +350,25 @@ abstract class Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Unguards the model.
+	 *
+	 * Sets the model to be unguarded, allowing the filling of
+	 * guarded attributes.
+	 */
+	public function unguard() {
+		$this->is_guarded = false;
+	}
+
+	/**
+	 * Reguards the model.
+	 *
+	 * Sets the model to be guarded, preventing filling of
+	 * guarded attributes.
+	 */
+	public function reguard() {
+		$this->is_guarded = true;
 	}
 }
