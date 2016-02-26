@@ -11,13 +11,13 @@ use WP_Post;
  * to transparently map some attributes to an underlying WP_Post
  * object and others to postmeta or a custom table.
  *
- * @package Intraxia\Jaxion
+ * @package    Intraxia\Jaxion
  * @subpackage Model
- * @since 0.1.0
+ * @since      0.1.0
  */
 abstract class Base {
 	/**
-	 * Model attributes array.
+	 * Model attributes.
 	 *
 	 * @var array
 	 */
@@ -71,7 +71,8 @@ abstract class Base {
 	/**
 	 * Constructs a new model with provided attributes.
 	 *
-	 * If 'post' is passed as one of the attributes
+	 * If 'post' is passed as one of the attributes, the underlying post
+	 * will be overwritten.
 	 *
 	 * @param array <string, mixed> $attributes
 	 */
