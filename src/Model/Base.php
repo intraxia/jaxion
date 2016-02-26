@@ -270,8 +270,35 @@ abstract class Base {
 
 		return $keys;
 	}
+
+	/**
+	 * Serializes the model's public data into an array.
+	 *
+	 * @return array
+	 */
+	public function serialize() {
+		$attributes = array();
+
+		if ( $this->visible ) {
+			// If visible attributes are set, we'll only reveal those.
+			foreach ( $this->visible as $key ) {
+				$attributes[ $key ] = $this->get_attribute( $key );
+			}
+		} elseif ( $this->hidden ) {
+			// If hidden attributes are set, we'll grab everything and hide those.
+			foreach ( $this->get_attribute_keys() as $key ) {
+				if ( ! in_array( $key, $this->hidden ) ) {
+					$attributes[ $key ] = $this->get_attribute( $key );
+				}
+			}
+		} else {
+			// If nothing is hidden/visible, we'll grab and reveal everything.
+			foreach ( $this->get_attribute_keys() as $key ) {
+				$attributes[ $key ] = $this->get_attribute( $key );
+			}
 		}
 
+		return $attributes;
 	}
 
 	/**
