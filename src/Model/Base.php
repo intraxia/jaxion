@@ -233,6 +233,43 @@ abstract class Base {
 		return array_unique( array_merge( $this->fillable, $this->guarded, $this->hidden, $this->visible ) );
 	}
 
+	/**
+	 * Retrieves the attribute keys that aren't mapped to a post.
+	 *
+	 * @todo memoize this method
+	 *
+	 * @return array
+	 */
+	public function get_table_keys() {
+		$keys = array();
+
+		foreach ( $this->get_attribute_keys() as $key ) {
+			if ( ! $this->has_map_method( $key ) ) {
+				$keys[] = $key;
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Retrieves the attribute keys that are mapped to a post.
+	 *
+	 * @todo memoize this method
+	 *
+	 * @return array
+	 */
+	public function get_post_keys() {
+		$keys = array();
+
+		foreach ( $this->get_attribute_keys() as $key ) {
+			if ( $this->has_map_method( $key ) ) {
+				$keys[] = $key;
+			}
+		}
+
+		return $keys;
+	}
 		}
 
 	}
