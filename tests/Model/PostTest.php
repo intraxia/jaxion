@@ -1,7 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Test\Model;
 
-use Intraxia\Jaxion\Model\Post;
+use Intraxia\Jaxion\Axolotl\Post;
 use Mockery;
 use WP_Mock;
 
@@ -140,7 +140,7 @@ class PostTest extends \PHPUnit_Framework_TestCase {
 		$post                  = new Post( array() );
 		$post->random_property = 'Random property';
 
-		$this->setExpectedException( 'Intraxia\Jaxion\Model\PropertyDoesNotExistException' );
+		$this->setExpectedException( 'Intraxia\Jaxion\Axolotl\PropertyDoesNotExistException' );
 
 		$post->random_property;
 	}

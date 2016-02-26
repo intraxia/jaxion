@@ -1,9 +1,9 @@
 <?php
 namespace Intraxia\Jaxion\Test\Stubs;
 
-use Intraxia\Jaxion\Model\Base;
+use Intraxia\Jaxion\Axolotl\Model;
 
-class TableBase extends Base {
+class TableModel extends Model {
 	protected $table = 'stubs';
 
 	protected $post = false;

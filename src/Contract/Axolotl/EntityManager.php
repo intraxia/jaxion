@@ -1,8 +1,8 @@
 <?php
-namespace Intraxia\Jaxion\Contract\Database;
+namespace Intraxia\Jaxion\Contract\Axolotl;
 
-use Intraxia\Jaxion\Collection\Base as Collection;
-use Intraxia\Jaxion\Model\Base as Model;
+use Intraxia\Jaxion\Axolotl\Collection;
+use Intraxia\Jaxion\Axolotl\Model;
 use WP_Error;
 
 interface EntityManager {

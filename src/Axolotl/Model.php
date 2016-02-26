@@ -1,21 +1,21 @@
 <?php
-namespace Intraxia\Jaxion\Model;
+namespace Intraxia\Jaxion\Axolotl;
 
 use stdClass;
 use WP_Post;
 
 /**
- * Class Base
+ * Class Model
  *
  * Shared model methods and properties, allowing models
  * to transparently map some attributes to an underlying WP_Post
  * object and others to postmeta or a custom table.
  *
  * @package    Intraxia\Jaxion
- * @subpackage Model
+ * @subpackage Axolotl
  * @since      0.1.0
  */
-abstract class Base {
+abstract class Model {
 	/**
 	 * Model attributes.
 	 *

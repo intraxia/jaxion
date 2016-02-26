@@ -1,8 +1,8 @@
 <?php
 namespace Intraxia\Jaxion\Test\Model;
 
-use Intraxia\Jaxion\Test\Stubs\MetaBase;
-use Intraxia\Jaxion\Test\Stubs\TableBase;
+use Intraxia\Jaxion\Test\Stubs\MetaModel;
+use Intraxia\Jaxion\Test\Stubs\TableModel;
 use Mockery;
 use WP_Post;
 
@@ -17,7 +17,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_construct_to_meta_with_no_table() {
-		$base = new MetaBase( array(
+		$base = new MetaModel( array(
 			'test' => 'value'
 		) );
 
@@ -27,7 +27,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_assign_to_meta_with_no_table() {
-		$base       = new MetaBase();
+		$base       = new MetaModel();
 		$base->test = 'value';
 
 		$attributes = $base->get_attributes();
@@ -36,7 +36,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_construct_to_table() {
-		$base = new TableBase( array(
+		$base = new TableModel( array(
 			'test' => 'value'
 		) );
 
@@ -46,7 +46,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_assign_to_table() {
-		$base       = new TableBase();
+		$base       = new TableModel();
 		$base->test = 'value';
 
 		$attributes = $base->get_attributes();
@@ -55,13 +55,13 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_not_assign_post() {
-		$base = new TableBase();
+		$base = new TableModel();
 
 		$this->assertFalse( $base->get_underlying_post() );
 	}
 
 	public function test_should_copy_attributes_to_original() {
-		$model = new MetaBase( array(
+		$model = new MetaModel( array(
 			'test' => 'value',
 			'post' => new WP_Post,
 		) );
@@ -76,14 +76,14 @@ class BaseTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_clear_current_model_attributes() {
-		$model = new MetaBase( array(
+		$model = new MetaModel( array(
 			'test' => 'value',
 			'post' => $post = new WP_Post,
 		) );
 
 		$model->clear();
 
-		$this->setExpectedException( 'Intraxia\Jaxion\Model\PropertyDoesNotExistException' );
+		$this->setExpectedException( 'Intraxia\Jaxion\Axolotl\PropertyDoesNotExistException' );
 
 		$model->get_attribute( 'test' );
 

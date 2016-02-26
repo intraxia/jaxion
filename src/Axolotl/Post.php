@@ -1,5 +1,5 @@
 <?php
-namespace Intraxia\Jaxion\Model;
+namespace Intraxia\Jaxion\Axolotl;
 
 /**
  * Class Post
@@ -15,9 +15,9 @@ namespace Intraxia\Jaxion\Model;
  * @property string publish_date
  * @property string excerpt
  * @package Intraxia\Jaxion
- * @subpackage Model
+ * @subpackage Axolotl
  */
-class Post extends Base {
+class Post extends Model {
 	/**
 	 * Post type this model maps to.
 	 *
