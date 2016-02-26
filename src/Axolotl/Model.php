@@ -17,6 +17,13 @@ use WP_Post;
  */
 abstract class Model {
 	/**
+	 * Memoized values for class methods.
+	 *
+	 * @var array
+	 */
+	private static $memo = array();
+
+	/**
 	 * Model attributes.
 	 *
 	 * @var array
@@ -109,6 +116,7 @@ abstract class Model {
 	 * @param array <string, mixed> $attributes
 	 */
 	public function __construct( array $attributes = array() ) {
+		$this->maybe_boot();
 		$this->sync_original();
 
 		if ( $this->post ) {
@@ -135,14 +143,14 @@ abstract class Model {
 	}
 
 	/**
-	 * Get the model's attributes.
+	 * Get the model's table attributes.
 	 *
 	 * Returns the array of for the model that will either need to be
 	 * saved in postmeta or a separate table.
 	 *
 	 * @return array
 	 */
-	public function get_attributes() {
+	public function get_table_attributes() {
 		return $this->attributes['table'];
 	}
 
@@ -151,7 +159,7 @@ abstract class Model {
 	 *
 	 * @return array
 	 */
-	public function get_original_attributes() {
+	public function get_original_table_attributes() {
 		return $this->original['table'];
 	}
 
@@ -176,7 +184,7 @@ abstract class Model {
 	 *
 	 * @return WP_Post
 	 */
-	public function get_original_post() {
+	public function get_original_underlying_post() {
 		return $this->original['post'];
 	}
 
@@ -203,6 +211,8 @@ abstract class Model {
 	 * @param mixed  $value
 	 *
 	 * @return $this
+	 *
+	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
 		if ( 'post' === $name ) {
@@ -210,7 +220,7 @@ abstract class Model {
 		}
 
 		if ( ! $this->is_fillable( $name ) ) {
-			return $this;
+			throw new GuardedPropertyException;
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
@@ -230,36 +240,46 @@ abstract class Model {
 	 * @return array
 	 */
 	public function get_attribute_keys() {
-		return array_unique( array_merge( $this->fillable, $this->guarded, $this->hidden, $this->visible ) );
+		if ( isset( self::$memo[ get_called_class() ][ __METHOD__ ] ) ) {
+			return self::$memo[ get_called_class() ][ __METHOD__ ];
+		}
+
+		return self::$memo[ get_called_class() ][ __METHOD__ ] = array_merge( $this->fillable, $this->guarded, $this->get_compute_methods() );
 	}
 
 	/**
 	 * Retrieves the attribute keys that aren't mapped to a post.
 	 *
-	 * @todo memoize this method
-	 *
 	 * @return array
 	 */
 	public function get_table_keys() {
+		if ( isset( self::$memo[ get_called_class() ][ __METHOD__ ] ) ) {
+			return self::$memo[ get_called_class() ][ __METHOD__ ];
+		}
+
 		$keys = array();
 
 		foreach ( $this->get_attribute_keys() as $key ) {
-			if ( ! $this->has_map_method( $key ) ) {
+			if ( ! $this->has_map_method( $key ) &&
+			     ! $this->has_compute_method( $key )
+			) {
 				$keys[] = $key;
 			}
 		}
 
-		return $keys;
+		return self::$memo[ get_called_class() ][ __METHOD__ ] = $keys;
 	}
 
 	/**
 	 * Retrieves the attribute keys that are mapped to a post.
 	 *
-	 * @todo memoize this method
-	 *
 	 * @return array
 	 */
 	public function get_post_keys() {
+		if ( isset( self::$memo[ get_called_class() ][ __METHOD__ ] ) ) {
+			return self::$memo[ get_called_class() ][ __METHOD__ ];
+		}
+
 		$keys = array();
 
 		foreach ( $this->get_attribute_keys() as $key ) {
@@ -268,7 +288,28 @@ abstract class Model {
 			}
 		}
 
-		return $keys;
+		return self::$memo[ get_called_class() ][ __METHOD__ ] = $keys;
+	}
+
+	/**
+	 * Returns the model's keys that are computed at call time.
+	 *
+	 * @return array
+	 */
+	public function get_computed_keys() {
+		if ( isset( self::$memo[ get_called_class() ][ __METHOD__ ] ) ) {
+			return self::$memo[ get_called_class() ][ __METHOD__ ];
+		}
+
+		$keys = array();
+
+		foreach ( $this->get_attribute_keys() as $key ) {
+			if ( $this->has_compute_method( $key ) ) {
+				$keys[] = $key;
+			}
+		}
+
+		return self::$memo[ get_called_class() ][ __METHOD__ ] = $keys;
 	}
 
 	/**
@@ -326,22 +367,23 @@ abstract class Model {
 	 * @return bool
 	 */
 	private function is_fillable( $name ) {
-		// `type` is not fillable at all.
-		if ( 'type' === $name ) {
-			return false;
-		}
-
-		// If the `$fillable` array hasn't been defined, pass everything.
-		if ( ! $this->fillable ) {
-			return true;
-		}
-
 		// If this model isn't guarded, everything is fillable.
 		if ( ! $this->is_guarded ) {
 			return true;
 		}
 
-		return in_array( $name, $this->fillable );
+		// If it's in the fillable array, then it's fillable.
+		if ( in_array( $name, $this->fillable ) ) {
+			return true;
+		}
+
+		// If it's explicitly guarded, then it's not fillable.
+		if ( in_array( $name, $this->guarded ) ) {
+			return false;
+		}
+
+		// If fillable hasn't been defined, then everything else fillable.
+		return ! $this->fillable;
 	}
 
 	/**
@@ -381,8 +423,8 @@ abstract class Model {
 	 * @return WP_Post
 	 */
 	protected function enforce_post_defaults( WP_Post $post ) {
-		if ( is_string( $this->type ) ) {
-			$post->post_type = $this->type;
+		if ( method_exists( $this, 'get_post_type' ) ) {
+			$post->post_type = $this->get_post_type();
 		}
 
 		return $post;
@@ -414,10 +456,6 @@ abstract class Model {
 	 * @throws PropertyDoesNotExistException If property isn't found.
 	 */
 	public function get_attribute( $name ) {
-		if ( 'type' === $name ) {
-			return $this->type;
-		}
-
 		if ( $method = $this->has_map_method( $name ) ) {
 			$value = $this->attributes['post']->{$this->{$method}()};
 		} elseif ( $method = $this->has_compute_method( $name ) ) {
@@ -482,12 +520,12 @@ abstract class Model {
 	public function clear() {
 		$keys = $this->get_attribute_keys();
 
-		if ( ! $keys ) {
-			$keys = array_keys( $this->attributes['table'] );
-		}
-
 		foreach ( $keys as $key ) {
-			$this->set_attribute( $key, null );
+			try {
+				$this->set_attribute( $key, null );
+			} catch ( GuardedPropertyException $e ) {
+				// We won't clear out guarded attributes.
+			}
 		}
 
 		return $this;
@@ -511,5 +549,31 @@ abstract class Model {
 	 */
 	public function reguard() {
 		$this->is_guarded = true;
+	}
+
+	/**
+	 * Retrieves all the compute methods on the model.
+	 *
+	 * @return array
+	 */
+	protected function get_compute_methods() {
+		$methods = get_class_methods( get_called_class() );
+		$methods = array_filter( $methods, function ( $method ) {
+			return strrpos( $method, 'compute_', - strlen( $method ) ) !== false;
+		} );
+		$methods = array_map( function ( $method ) {
+			return substr( $method, strlen( 'compute_' ) );
+		}, $methods );
+
+		return $methods;
+	}
+
+	/**
+	 * Sets up the memo array for the creating model.
+	 */
+	private function maybe_boot() {
+		if ( ! isset( self::$memo[ get_called_class() ] ) ) {
+			self::$memo[ get_called_class() ] = array();
+		}
 	}
 }
