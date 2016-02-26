@@ -338,13 +338,15 @@ abstract class Base {
 	 *
 	 * @throws PropertyDoesNotExistException If property isn't found.
 	 */
-	protected function get_attribute( $name ) {
+	public function get_attribute( $name ) {
 		if ( 'type' === $name ) {
 			return $this->type;
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
 			$value = $this->attributes['post']->{$this->{$method}()};
+		} elseif ( $method = $this->has_compute_method( $name ) ) {
+			$value = $this->{$method}();
 		} else {
 			if ( ! isset( $this->attributes['table'][ $name ] ) ) {
 				throw new PropertyDoesNotExistException;
@@ -370,6 +372,24 @@ abstract class Base {
 	 */
 	protected function has_map_method( $name ) {
 		if ( method_exists( $this, $method = "map_{$name}" ) ) {
+			return $method;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether the attribute has a compute method.
+	 *
+	 * This is used to determine if the attribute should be computed
+	 * from other attributes.
+	 *
+	 * @param string $name
+	 *
+	 * @return false|string
+	 */
+	protected function has_compute_method( $name ) {
+		if ( method_exists( $this, $method = "compute_{$name}" ) ) {
 			return $method;
 		}
 
