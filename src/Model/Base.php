@@ -109,12 +109,28 @@ abstract class Base {
 	 * @param array <string, mixed> $attributes
 	 */
 	public function __construct( array $attributes = array() ) {
-		foreach ( $attributes as $name => $value ) {
-			$this->set_attribute( $name, $value );
+		$this->sync_original();
+
+		if ( $this->post ) {
+			$this->create_default_post();
 		}
 
-		if ( $this->post && ! isset( $this->attributes['post'] ) ) {
-			$this->create_default_post();
+		$this->refresh( $attributes );
+	}
+
+	/**
+	 * Refreshes the model's current attributes with the provided array.
+	 *
+	 * The model's attributes will match what was provided in the array,
+	 * and any attributes not passed
+	 *
+	 * @param array $attributes
+	 */
+	public function refresh( array $attributes ) {
+		$this->clear();
+
+		foreach ( $attributes as $name => $value ) {
+			$this->set_attribute( $name, $value );
 		}
 	}
 
