@@ -201,25 +201,29 @@ abstract class Base {
 	 *
 	 * @param string $name
 	 * @param mixed  $value
+	 *
+	 * @return $this
 	 */
-	private function set_attribute( $name, $value ) {
+	public function set_attribute( $name, $value ) {
 		if ( 'post' === $name ) {
-			$this->override_post( $value );
-
-			return;
+			return $this->override_post( $value );
 		}
 
 		if ( ! $this->is_fillable( $name ) ) {
-			return;
+			return $this;
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
 			$this->attributes['post']->{$this->{$method}()} = $value;
-
-			return;
+		} else {
+			$this->attributes['table'][ $name ] = $value;
 		}
 
-		$this->attributes['table'][ $name ] = $value;
+		return $this;
+	}
+
+		}
+
 	}
 
 	/**
@@ -271,9 +275,13 @@ abstract class Base {
 	 * Resets the post's default values and stores it in the attributes.
 	 *
 	 * @param WP_Post $value
+	 *
+	 * @return $this
 	 */
 	private function override_post( WP_Post $value ) {
 		$this->attributes['post'] = $this->enforce_post_defaults( $value );
+
+		return $this;
 	}
 
 	/**
