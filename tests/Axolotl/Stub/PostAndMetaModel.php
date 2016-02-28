@@ -2,8 +2,9 @@
 namespace Intraxia\Jaxion\Test\Axolotl\Stub;
 
 use Intraxia\Jaxion\Axolotl\Model;
+use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
 
-class DefaultModel extends Model {
+class PostAndMetaModel extends Model implements UsesWordPressPost {
 	protected $fillable = array(
 		'title',
 		'text',
@@ -19,7 +20,7 @@ class DefaultModel extends Model {
 		'url',
 	);
 
-	protected function get_post_type() {
+	public static function get_post_type() {
 		return 'custom';
 	}
 

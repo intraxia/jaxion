@@ -1,6 +1,8 @@
 <?php
 namespace Intraxia\Jaxion\Axolotl;
 
+use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
+use LogicException;
 use stdClass;
 use WP_Post;
 
@@ -30,7 +32,7 @@ abstract class Model {
 	 */
 	private $attributes = array(
 		'table' => array(),
-		'post'  => null,
+		'object'  => null,
 	);
 
 	/**
@@ -40,31 +42,8 @@ abstract class Model {
 	 */
 	private $original = array(
 		'table' => array(),
-		'post'  => null,
+		'object'  => null,
 	);
-
-	/**
-	 * Which custom table does this model uses.
-	 *
-	 * If false, model wil fall back to postmeta.
-	 *
-	 * @var bool|string
-	 */
-	protected $table = false;
-
-	/**
-	 * Whether to use WP_Post mappings.
-	 *
-	 * @var bool
-	 */
-	protected $post = true;
-
-	/**
-	 * Custom post type.
-	 *
-	 * @var bool|string
-	 */
-	protected $type = false;
 
 	/**
 	 * Properties which are allowed to be set on the model.
@@ -110,7 +89,7 @@ abstract class Model {
 	/**
 	 * Constructs a new model with provided attributes.
 	 *
-	 * If 'post' is passed as one of the attributes, the underlying post
+	 * If 'object' is passed as one of the attributes, the underlying post
 	 * will be overwritten.
 	 *
 	 * @param array <string, mixed> $attributes
@@ -119,8 +98,8 @@ abstract class Model {
 		$this->maybe_boot();
 		$this->sync_original();
 
-		if ( $this->post ) {
-			$this->create_default_post();
+		if ( $this->uses_wp_object() ) {
+			$this->create_wp_object();
 		}
 
 		$this->refresh( $attributes );
@@ -171,9 +150,9 @@ abstract class Model {
 	 *
 	 * @return false|WP_Post
 	 */
-	public function get_underlying_post() {
-		if ( isset( $this->attributes['post'] ) ) {
-			return $this->attributes['post'];
+	public function get_underlying_wp_object() {
+		if ( isset( $this->attributes['object'] ) ) {
+			return $this->attributes['object'];
 		}
 
 		return false;
@@ -184,8 +163,8 @@ abstract class Model {
 	 *
 	 * @return WP_Post
 	 */
-	public function get_original_underlying_post() {
-		return $this->original['post'];
+	public function get_original_underlying_wp_object() {
+		return $this->original['object'];
 	}
 
 	/**
@@ -215,8 +194,8 @@ abstract class Model {
 	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
-		if ( 'post' === $name ) {
-			return $this->override_post( $value );
+		if ( 'object' === $name ) {
+			return $this->override_wp_object( $value );
 		}
 
 		if ( ! $this->is_fillable( $name ) ) {
@@ -224,7 +203,7 @@ abstract class Model {
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
-			$this->attributes['post']->{$this->{$method}()} = $value;
+			$this->attributes['object']->{$this->{$method}()} = $value;
 		} else {
 			$this->attributes['table'][ $name ] = $value;
 		}
@@ -235,8 +214,6 @@ abstract class Model {
 	/**
 	 * Retrieves all the attribute keys for the model.
 	 *
-	 * @todo memoize this method
-	 *
 	 * @return array
 	 */
 	public function get_attribute_keys() {
@@ -244,7 +221,12 @@ abstract class Model {
 			return self::$memo[ get_called_class() ][ __METHOD__ ];
 		}
 
-		return self::$memo[ get_called_class() ][ __METHOD__ ] = array_merge( $this->fillable, $this->guarded, $this->get_compute_methods() );
+		return self::$memo[ get_called_class() ][ __METHOD__ ]
+			= array_merge(
+				$this->fillable,
+				$this->guarded,
+				$this->get_compute_methods()
+			);
 	}
 
 	/**
@@ -275,7 +257,7 @@ abstract class Model {
 	 *
 	 * @return array
 	 */
-	public function get_post_keys() {
+	public function get_wp_object_keys() {
 		if ( isset( self::$memo[ get_called_class() ][ __METHOD__ ] ) ) {
 			return self::$memo[ get_called_class() ][ __METHOD__ ];
 		}
@@ -350,8 +332,8 @@ abstract class Model {
 	public function sync_original() {
 		$this->original = $this->attributes;
 
-		if ( $this->attributes['post'] instanceof WP_Post ) {
-			$this->original['post'] = clone $this->attributes['post'];
+		if ( $this->attributes['object'] ) {
+			$this->original['object'] = clone $this->attributes['object'];
 		}
 
 		return $this;
@@ -395,8 +377,8 @@ abstract class Model {
 	 *
 	 * @return $this
 	 */
-	private function override_post( WP_Post $value ) {
-		$this->attributes['post'] = $this->enforce_post_defaults( $value );
+	private function override_wp_object( $value ) {
+		$this->attributes['object'] = $this->set_wp_object_constants( $value );
 
 		return $this;
 	}
@@ -406,9 +388,20 @@ abstract class Model {
 	 *
 	 * Creates a new WP_Post object, assigns it the default attributes,
 	 * and stores it in the attributes.
+	 *
+	 * @throws LogicException
 	 */
-	private function create_default_post() {
-		$this->attributes['post'] = $this->enforce_post_defaults( new WP_Post( new stdClass ) );
+	private function create_wp_object() {
+		switch ( true ) {
+			case $this instanceof UsesWordPressPost:
+				$object = new WP_Post( (object) array() );
+				break;
+			default:
+				throw new LogicException;
+				break;
+		}
+
+		$this->attributes['object'] = $this->set_wp_object_constants( $object );
 	}
 
 	/**
@@ -418,16 +411,16 @@ abstract class Model {
 	 * to the model's "$type" property, but this can all be overridden
 	 * by the developer to enforce other values in the model.
 	 *
-	 * @param WP_Post $post
+	 * @param object $object
 	 *
-	 * @return WP_Post
+	 * @return object
 	 */
-	protected function enforce_post_defaults( WP_Post $post ) {
-		if ( method_exists( $this, 'get_post_type' ) ) {
-			$post->post_type = $this->get_post_type();
+	protected function set_wp_object_constants( $object ) {
+		if ( $this instanceof UsesWordPressPost ) {
+			$object->post_type = $this::get_post_type();
 		}
 
-		return $post;
+		return $object;
 	}
 
 	/**
@@ -457,7 +450,7 @@ abstract class Model {
 	 */
 	public function get_attribute( $name ) {
 		if ( $method = $this->has_map_method( $name ) ) {
-			$value = $this->attributes['post']->{$this->{$method}()};
+			$value = $this->attributes['object']->{$this->{$method}()};
 		} elseif ( $method = $this->has_compute_method( $name ) ) {
 			$value = $this->{$method}();
 		} else {
@@ -575,5 +568,14 @@ abstract class Model {
 		if ( ! isset( self::$memo[ get_called_class() ] ) ) {
 			self::$memo[ get_called_class() ] = array();
 		}
+	}
+
+	/**
+	 * Whether this Model uses an underlying WordPress object.
+	 *
+	 * @return bool
+	 */
+	protected function uses_wp_object() {
+		return $this instanceof UsesWordPressPost;
 	}
 }

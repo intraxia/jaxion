@@ -2,8 +2,9 @@
 namespace Intraxia\Jaxion\Test\Axolotl\Stub;
 
 use Intraxia\Jaxion\Axolotl\Model;
+use Intraxia\Jaxion\Contract\Axolotl\UsesCustomTable;
 
-class ModelToTable extends Model {
+class TableModel extends Model implements UsesCustomTable{
 	protected $fillable = array(
 		'title',
 		'text',
@@ -19,5 +20,7 @@ class ModelToTable extends Model {
 		'url',
 	);
 
-	protected $post = false;
+	public static function get_table_name() {
+		return 'custom';
+	}
 }

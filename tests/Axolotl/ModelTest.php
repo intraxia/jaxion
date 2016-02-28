@@ -1,8 +1,8 @@
 <?php
 namespace Intraxia\Jaxion\Test\Axolotl;
 
-use Intraxia\Jaxion\Test\Axolotl\Stub\DefaultModel;
-use Intraxia\Jaxion\Test\Axolotl\Stub\ModelToTable;
+use Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel;
+use Intraxia\Jaxion\Test\Axolotl\Stub\TableModel;
 use Intraxia\Jaxion\Test\Axolotl\Stub\ModelWithHiddenAttrs;
 use Intraxia\Jaxion\Test\Axolotl\Stub\ModelWithNoHiddenVisibleAttrs;
 use Mockery;
@@ -21,7 +21,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_construct_with_attributes() {
 		$args = array( 'text' => 'Some text' );
 
-		$model = new DefaultModel( $args );
+		$model = new PostAndMetaModel( $args );
 
 		$this->assertSame( $args, $model->get_table_attributes() );
 		$this->assertSame( $args['text'], $model->get_attribute( 'text' ) );
@@ -29,19 +29,19 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_construct_with_post() {
-		$post = $this->create_post();
+		$object = $this->create_post();
 
-		$model = new DefaultModel( compact( 'post' ) );
+		$model = new PostAndMetaModel( compact( 'object' ) );
 
-		$this->assertSame( $post, $model->get_underlying_post() );
-		$this->assertSame( $post->ID, $model->ID );
-		$this->assertSame( $post->ID, $model->get_attribute( 'ID' ) );
-		$this->assertSame( $post->post_title, $model->title );
-		$this->assertSame( $post->post_title, $model->get_attribute( 'title' ) );
+		$this->assertSame( $object, $model->get_underlying_wp_object() );
+		$this->assertSame( $object->ID, $model->ID );
+		$this->assertSame( $object->ID, $model->get_attribute( 'ID' ) );
+		$this->assertSame( $object->post_title, $model->title );
+		$this->assertSame( $object->post_title, $model->get_attribute( 'title' ) );
 	}
 
 	public function test_should_fill_to_attributes() {
-		$model = new DefaultModel();
+		$model = new PostAndMetaModel();
 
 		$model->text = 'Text1';
 
@@ -59,7 +59,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_fill_to_post() {
-		$model = new DefaultModel();
+		$model = new PostAndMetaModel();
 
 		$model->title = 'Title1';
 
@@ -71,19 +71,19 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( 'Title2', $model->title );
 		$this->assertSame( 'Title2', $model->get_attribute( 'title' ) );
 
-		$post = $model->get_underlying_post();
+		$post = $model->get_underlying_wp_object();
 
 		$this->assertSame( 'Title2', $post->post_title );
 	}
 
 	public function test_table_model_should_not_have_post() {
-		$model = new ModelToTable;
+		$model = new TableModel;
 
-		$this->assertFalse( $model->get_underlying_post() );
+		$this->assertFalse( $model->get_underlying_wp_object() );
 	}
 
 	public function test_should_not_fill_guarded_when_guarded() {
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
 		$this->setExpectedException( 'Intraxia\Jaxion\Axolotl\GuardedPropertyException' );
 
@@ -91,7 +91,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_fill_guarded_when_unguarded() {
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
 		$model->unguard();
 
@@ -107,21 +107,21 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_compute_attribute() {
-		$model = new DefaultModel( $this->create_args() );
+		$model = new PostAndMetaModel( $this->create_args() );
 
 		$this->assertSame( 'example.com/Title', $model->get_attribute( 'url' ) );
 	}
 
 	public function test_should_set_default_post_type() {
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
-		$this->assertSame( 'custom', $model->get_underlying_post()->post_type );
+		$this->assertSame( 'custom', $model->get_underlying_wp_object()->post_type );
 	}
 
 	public function test_should_return_defined_attributes() {
 		$keys = array( 'title', 'text', 'ID', 'url' );
 
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
 		$this->assertSame( $keys, $model->get_attribute_keys() );
 		$this->assertSame( $keys, $model->get_attribute_keys() ); // Test memoizing
@@ -140,7 +140,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_retrieve_table_keys() {
 		$keys = array( 'text' );
 
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
 		$this->assertSame( $keys, $model->get_table_keys() );
 		$this->assertSame( $keys, $model->get_table_keys() ); // Test memoizing
@@ -149,23 +149,23 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_retrieve_post_keys() {
 		$keys = array( 'title', 'ID' );
 
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
-		$this->assertSame( $keys, $model->get_post_keys() );
-		$this->assertSame( $keys, $model->get_post_keys() ); // Test memoizing
+		$this->assertSame( $keys, $model->get_wp_object_keys() );
+		$this->assertSame( $keys, $model->get_wp_object_keys() ); // Test memoizing
 	}
 
 	public function test_should_retrieve_computed_keys() {
 		$keys = array( 'url' );
 
-		$model = new DefaultModel;
+		$model = new PostAndMetaModel;
 
 		$this->assertSame( $keys, $model->get_computed_keys() );
 		$this->assertSame( $keys, $model->get_computed_keys() ); // Test memoizing
 	}
 
 	public function test_should_serialize_visible_attributes() {
-		$model = new DefaultModel( $args = $this->create_args() );
+		$model = new PostAndMetaModel( $args = $this->create_args() );
 
 		$keys = array( 'title', 'text', 'url' );
 
@@ -203,7 +203,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_copy_attributes_to_original() {
 		$args = $this->create_args();
 
-		$model = new DefaultModel( $args );
+		$model = new PostAndMetaModel( $args );
 
 		$model->sync_original();
 
@@ -211,13 +211,13 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 		$attributes = $model->get_table_attributes();
 
 		$this->assertSame( $original['text'], $attributes['text'] );
-		$this->assertNotSame( $model->get_original_underlying_post(), $model->get_underlying_post() );
+		$this->assertNotSame( $model->get_original_underlying_wp_object(), $model->get_underlying_wp_object() );
 	}
 
 	public function test_should_clear_fillable_model_attributes() {
 		$args = $this->create_args();
 
-		$model = new DefaultModel( $args );
+		$model = new PostAndMetaModel( $args );
 
 		$model->clear();
 
@@ -225,7 +225,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 
 		$model->get_attribute( 'text' );
 
-		$this->assertSame( $args['post'], $model->get_underlying_post() );
+		$this->assertSame( $args['post'], $model->get_underlying_wp_object() );
 	}
 
 	public function tearDown() {
@@ -250,7 +250,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	protected function create_args() {
 		$args = array(
 			'text' => 'Some text',
-			'post' => $this->create_post(),
+			'object' => $this->create_post(),
 		);
 
 		return $args;
