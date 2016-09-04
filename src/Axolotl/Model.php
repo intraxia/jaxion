@@ -3,8 +3,10 @@ namespace Intraxia\Jaxion\Axolotl;
 
 use Intraxia\Jaxion\Contract\Axolotl\Serializes;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
+use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressTerm;
 use LogicException;
 use WP_Post;
+use WP_Term;
 
 /**
  * Class Model
@@ -148,7 +150,7 @@ abstract class Model implements Serializes {
 	 * Returns the underlying WP_Post object for the model, representing
 	 * the data that will be save in the wp_posts table.
 	 *
-	 * @return false|WP_Post
+	 * @return false|WP_Post|WP_Term
 	 */
 	public function get_underlying_wp_object() {
 		if ( isset( $this->attributes['object'] ) ) {
@@ -321,13 +323,13 @@ abstract class Model implements Serializes {
 			}
 		}
 
-		return array_map(function( $attribute ) {
+		return array_map( function ( $attribute ) {
 			if ( $attribute instanceof Serializes ) {
 				return $attribute->serialize();
 			}
 
 			return $attribute;
-		}, $attributes);
+		}, $attributes );
 	}
 
 	/**
@@ -402,6 +404,9 @@ abstract class Model implements Serializes {
 			case $this instanceof UsesWordPressPost:
 				$object = new WP_Post( (object) array() );
 				break;
+			case $this instanceof UsesWordPressTerm:
+				$object = new WP_Term( (object) array() );
+				break;
 			default:
 				throw new LogicException;
 				break;
@@ -424,6 +429,10 @@ abstract class Model implements Serializes {
 	protected function set_wp_object_constants( $object ) {
 		if ( $this instanceof UsesWordPressPost ) {
 			$object->post_type = $this::get_post_type();
+		}
+
+		if ( $this instanceof UsesWordPressTerm ) {
+			$object->taxonomy = $this::get_taxonomy();
 		}
 
 		return $object;
@@ -469,6 +478,27 @@ abstract class Model implements Serializes {
 
 		return $value;
 
+	}
+
+	/**
+	 * Fetches the Model's primary ID, depending on the model
+	 * implementation.
+	 *
+	 * @return int
+	 *
+	 * @throws LogicException
+	 */
+	public function get_primary_id() {
+		if ( $this instanceof UsesWordPressPost ) {
+			return $this->get_underlying_wp_object()->ID;
+		}
+
+		if ( $this instanceof UsesWordPressTerm ) {
+			return $this->get_underlying_wp_object()->term_id;
+		}
+
+		// Model w/o wp_object not yet supported.
+		throw new LogicException;
 	}
 
 	/**
@@ -582,6 +612,7 @@ abstract class Model implements Serializes {
 	 * @return bool
 	 */
 	protected function uses_wp_object() {
-		return $this instanceof UsesWordPressPost;
+		return $this instanceof UsesWordPressPost ||
+			$this instanceof UsesWordPressTerm;
 	}
 }
