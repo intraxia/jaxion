@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Jaxion from Intraxia</title>
+
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="http://intraxia.github.io/jaxion/">
+                Jaxion from Intraxia
+                <small class="hidden-xs hidden-sm">
+                    An object-oriented framework for building complex WordPress plugin applications
+                </small>
+            </a>
+
+                            <a href="https://github.com/intraxia/jaxion">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                        <ul class="nav nav-pills nav-stacked">
+                                                            <li class="">
+                                    <a href="http://intraxia.github.io/jaxion/./">
+                                        Home
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="http://intraxia.github.io/jaxion/docs/">
+                                        Introduction
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="http://intraxia.github.io/jaxion/docs/axolotl/">
+                                        Axolotl
+                                    </a>
+                                </li>
+                                                    </ul>
+
+                    </nav>
+
+                
+                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="changelog">Changelog</h1>
+<p>All Notable changes to <code>jaxion</code> will be documented in this file. This change log follows the <a href="http://keepachangelog.com/">Keep a Changelog standards</a>. Versions follows <a href="http://semver.org/">Semantic Versioning</a>.</p>
+<h2><a href="http://github.com/intraxia/jaxion">NEXT</a></h2>
+<h3 id="added">Added</h3>
+<ul>
+<li>Unit tests for all Model-related functionality.</li>
+<li>Exposed and memoized methods for key-related info for Models.
+<ul>
+<li>These will be used by the EntityManager to fill in all of the Model's attributes.</li>
+</ul></li>
+</ul>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>Moved all Database-related code to Axolotl namespace,</li>
+<li>Renamed <code>Model\Base</code> class to <code>Axolotl\Model</code> class.</li>
+<li>Removed <code>Model\Post</code> class.</li>
+</ul>
+<h2><a href="https://github.com/intraxia/jaxion/tree/0.0.1">0.0.1</a></h2>
+<h3 id="added-1">Added</h3>
+<ul>
+<li>Core framework classes:
+<ul>
+<li>Application container, for dependency injection</li>
+<li>Loader, for registering services with WordPress</li>
+<li>ServiceProvider contract, for registering services with the container</li>
+</ul></li>
+<li>Assets management classes:
+<ul>
+<li>Register, for easily registering assets with WordPress</li>
+</ul></li>
+<li>WP-API Http classes:
+<ul>
+<li>Router and Endpoint, for registering with the WP-API</li>
+<li>Guards and Filters, for protecting your registered endpoints</li>
+</ul></li>
+<li>Model classes:
+<ul>
+<li>Base and Post, for providing a simple, unified interface over WP_Post and post_meta</li>
+</ul></li>
+</ul>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

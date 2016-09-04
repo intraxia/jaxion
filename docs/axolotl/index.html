@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Jaxion from Intraxia</title>
+
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://intraxia.github.io/jaxion/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="http://intraxia.github.io/jaxion/">
+                Jaxion from Intraxia
+                <small class="hidden-xs hidden-sm">
+                    An object-oriented framework for building complex WordPress plugin applications
+                </small>
+            </a>
+
+                            <a href="https://github.com/intraxia/jaxion">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                        <ul class="nav nav-pills nav-stacked">
+                                                            <li class="">
+                                    <a href="http://intraxia.github.io/jaxion/./">
+                                        Home
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="http://intraxia.github.io/jaxion/docs/">
+                                        Introduction
+                                    </a>
+                                </li>
+                                                            <li class="active">
+                                    <a href="http://intraxia.github.io/jaxion/docs/axolotl/">
+                                        Axolotl
+                                    </a>
+                                </li>
+                                                    </ul>
+
+                    </nav>
+
+                
+                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="axolotl-working-with-the-database">Axolotl: Working with the Database</h1>
+<p>When writing a plugin or application on top of WordPress, you'll invariably need to persist data to the database. <code>Jaxion</code>'s <code>Axolotl</code> package will be able handle all of the database interactions, abstracting over WordPress's underlying <code>WP_Post</code>-like objects and their associated WordPress <code>meta</code> or custom table. <code>Axolotl\Model</code> handles this abstraction, allowing the application to interact with the data without worrying about where that data gets persisted.</p>
+<h2 id="declaring-a-data-model">Declaring a Data Model</h2>
+<p>To abstract over the WordPress data types, the application needs to extend the built-in <code>Axolotl\Model</code> class. The <code>Model</code> uses <code>Contract</code>s to determine how the data is persisted and a few properties to define how the model attributes are updated and serialized.</p>
+<h3 id="declaring-model-attributes">Declaring Model Attributes</h3>
+<p>There are 2 properties which define the Model's attributes:</p>
+<ul>
+<li><code>$fillable</code>: Defines attributes that can be set, regardless of whether the Model is currently <code>guarded</code>.</li>
+<li><code>$guarded</code>: Defines attributes that can only be set when the Model is <strong>not</strong> <code>guarded</code>.</li>
+</ul>
+<p>Both <code>$fillable</code> &amp; <code>$guarded</code> can be used defined; together, they make up the Model's attributes. It is recommended to define the Model's attributes in its docblock:</p>
+<pre><code class="language-php">&lt;?php
+
+/**
+ * @property int $ID
+ */
+class MyClass extends Model {
+    protected $fillable = array(
+        'ID',
+    );
+}</code></pre>
+<p>Attributes can be set and retrieved using <code>{get/set}_attribute</code>:</p>
+<pre><code class="language-php">&lt;?php
+$model = new MyClass();
+$model-&gt;set_attribute( 'ID', 1 );
+$model-&gt;get_attribute( 'ID' ); // 1</code></pre>
+<h4 id="computed-attributes">Computed Attributes</h4>
+<p>In addition to the attributes defined in <code>$fillable</code> &amp; <code>$guarded</code>, <code>Axolotl\Model</code> supports computed properties. In order to define a computed property, define a method that begins with <code>compute_</code>:</p>
+<pre><code class="language-php">&lt;?php
+
+/**
+ * @property int $ID
+ */
+class MyClass extends Model {
+    protected $fillable = array(
+        'ID',
+    );
+
+    public function compute_url() {
+        return 'http://example.com/?id=' . $this-&gt;get_attribute( 'ID' );
+    }
+}</code></pre>
+<p>The computed value can be retrieved through <code>get_attribute</code>. For computed properties, <code>set_attribute</code> throws an <code>Exception</code>:</p>
+<pre><code class="language-php">&lt;?php
+$model = new MyClass();
+$model-&gt;get_attribute( 'url' ); // 'http://example.com/?id=1'
+$model-&gt;set_attribute( 'url', 'http://example.com/?id=3' ); // PropertyDoesNotExistException</code></pre>
+<h3 id="data-source-contracts">Data Source Contracts</h3>
+<p>A <code>Contract</code> <strong>must</strong> be implemented in order for that <code>Model</code> to work; an <code>Exception</code> will be thrown if you attempt to instantiate a <code>Model</code> without a proper <code>Contract</code>.</p>
+<p><code>Jaxion</code> currently ships with these data source <code>Contracts</code>:</p>
+<ul>
+<li>WordPress Object <code>Contracts</code>
+<ul>
+<li><code>Contract\Axolotl\UsesWordPressPost</code></li>
+<li><code>Contract\Axolotl\UsesWordPressTerm</code></li>
+</ul></li>
+<li>Custom Table <code>Contract</code>
+<ul>
+<li><code>Contract\Axolotl\UsesCustomTable</code></li>
+</ul></li>
+</ul>
+<p>Each of those <code>Contract</code>s require particular methods to be implemented, defining how the data source is backed. The WordPress Object <code>Contract</code>s require methods to define the object type, while the Custom Table <code>Contract</code> requires a method to define the table name. Only one WordPress Object <code>Contract</code> can be implemented on a single Model.</p>
+<p>A Model implementing a WordPress Object <code>Contract</code> needs to explicitly map Model attributes to the underlying object. This is handled by defining a method beginning with <code>map_</code>:</p>
+<pre><code class="language-php">&lt;?php
+
+use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
+
+/**
+ * @property int $ID
+ * @property string $title
+ */
+class MyClass extends Model implements UsesWordPressPost {
+    protected $fillable = array(
+        'ID',
+        'title'
+    );
+
+    public function map_title() {
+        return 'post_title';
+    }
+}</code></pre>
+<p>This maps the Model attribute <code>title</code> to the WP_Post property <code>post_title</code>. This way, the naming of the Model isn't constrained by the naming conventions of the underlying object. When using <code>set_attribute</code>, the mapped property of the underlying object will be updated:</p>
+<pre><code class="language-php">$model = new MyClass();
+$model-&gt;set_attribute( 'title', 'New Title' );
+$model-&gt;get_underlying_wp_object()-&gt;post_title // 'New Title'</code></pre>
+<p>By default, a Model with an implemented WordPress Object <code>Contract</code> will use the object's <code>meta</code> to back any attributes not mapped to its object. If a Model implementing a WordPress Object <code>Contract</code> also implements the Custom Table <code>Contract</code>, the Model will use a custom table to back those attributes.</p>
+<p>If the Model only implements the Custom Table <code>Contract</code>, all of the Model's attributes will be backed by a custom table.</p>
+<h3 id="controlling">Controlling <code>Model::serialize</code></h3>
+<p><code>Model::serialize</code> returns an associative array of the Model's attributes, perfect for returning data for an API response. The attributes included in <code>serialize</code> are controlled by these Model properties:</p>
+<ul>
+<li><code>$visible</code>: Defines attributes that are visible in <code>Model::serialize</code>.</li>
+<li><code>$hidden</code>: Defines the attributes that are hidden from <code>Model::serialize</code>.</li>
+</ul>
+<p>If both <code>$visible</code> &amp; <code>$hidden</code> are defined, only <code>$visible</code> is used to determine the attributes returned by <code>Model::serialize</code>. If neither <code>$visible</code> nor <code>$hidden</code> are defined, all of the Model's attributes are returned, including <code>computed</code> attributes.</p>
+<h3 id="example-data-model">Example Data Model</h3>
+<pre><code class="language-php">&lt;?php
+
+use Intraxia\Jaxion\Axolotl\Model;
+use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
+
+class MyModel extends Model implements UsesWordPressPost {
+    /**
+     * These properties can be assigned by default.
+     */
+    protected $fillable = array(
+        'title',
+        'text',
+    );
+
+    /**
+     * These properties cannot be assigned by default.
+     */
+    protected $guarded = array(
+        'ID',
+    );
+
+    /**
+     * These properties are serialized with `Model::serialize`.
+     */
+    protected $visible = array(
+        'title',
+        'text',
+        'url',
+    );
+
+    /**
+     * The custom post type to save the WordPress Post objects as.
+     */
+    public static function get_post_type() {
+        return 'custom';
+    }
+
+    /**
+     * Maps the ID attribute to the WP_Post::ID property.
+     */
+    protected function map_ID() {
+        return 'ID';
+    }
+
+    /**
+     * Maps the title attribute to the WP_Post::post_title property.
+     */
+    protected function map_title() {
+        return 'post_title';
+    }
+
+    /**
+     * Computes the url attribute.
+     */
+    public function compute_url() {
+        return 'http://example.com/?id=' . $this-&gt;get_attribute( 'ID' );
+    }
+}</code></pre>
+<h2 id="interacting-with-the-database">Interacting with the Database</h2>
+<p>Currently, this functionality has to be handled by the application code. An <code>EntityManager</code> for persisting Model's and their backing data to the database is underway.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
