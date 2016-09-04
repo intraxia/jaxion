@@ -1,6 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Test\Axolotl;
 
+use Intraxia\Jaxion\Axolotl\Model;
 use Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel;
 use Intraxia\Jaxion\Test\Axolotl\Stub\TableModel;
 use Intraxia\Jaxion\Test\Axolotl\Stub\ModelWithHiddenAttrs;
@@ -31,7 +32,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_construct_with_post() {
 		$object = $this->create_post();
 
-		$model = new PostAndMetaModel( compact( 'object' ) );
+		$model = new PostAndMetaModel( array( Model::OBJECT_KEY => $object ) );
 
 		$this->assertSame( $object, $model->get_underlying_wp_object() );
 		$this->assertSame( $object->ID, $model->ID );
@@ -250,7 +251,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	protected function create_args() {
 		$args = array(
 			'text' => 'Some text',
-			'object' => $this->create_post(),
+			Model::OBJECT_KEY => $this->create_post(),
 		);
 
 		return $args;

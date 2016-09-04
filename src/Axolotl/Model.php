@@ -21,6 +21,16 @@ use WP_Term;
  */
 abstract class Model implements Serializes {
 	/**
+	 * Table attribute key.
+	 */
+	const TABLE_KEY = '@@table';
+
+	/**
+	 * Object attribute key.
+	 */
+	const OBJECT_KEY = '@@object';
+
+	/**
 	 * Memoized values for class methods.
 	 *
 	 * @var array
@@ -33,8 +43,8 @@ abstract class Model implements Serializes {
 	 * @var array
 	 */
 	private $attributes = array(
-		'table' => array(),
-		'object'  => null,
+		self::TABLE_KEY  => array(),
+		self::OBJECT_KEY => null,
 	);
 
 	/**
@@ -43,8 +53,8 @@ abstract class Model implements Serializes {
 	 * @var array
 	 */
 	private $original = array(
-		'table' => array(),
-		'object'  => null,
+		self::TABLE_KEY  => array(),
+		self::OBJECT_KEY => null,
 	);
 
 	/**
@@ -91,7 +101,7 @@ abstract class Model implements Serializes {
 	/**
 	 * Constructs a new model with provided attributes.
 	 *
-	 * If 'object' is passed as one of the attributes, the underlying post
+	 * If self::OBJECT_KEY is passed as one of the attributes, the underlying post
 	 * will be overwritten.
 	 *
 	 * @param array <string, mixed> $attributes
@@ -147,7 +157,7 @@ abstract class Model implements Serializes {
 	 * @return array
 	 */
 	public function get_table_attributes() {
-		return $this->attributes['table'];
+		return $this->attributes[ self::TABLE_KEY ];
 	}
 
 	/**
@@ -156,7 +166,7 @@ abstract class Model implements Serializes {
 	 * @return array
 	 */
 	public function get_original_table_attributes() {
-		return $this->original['table'];
+		return $this->original[ self::TABLE_KEY ];
 	}
 
 	/**
@@ -189,8 +199,8 @@ abstract class Model implements Serializes {
 	 * @return false|WP_Post|WP_Term
 	 */
 	public function get_underlying_wp_object() {
-		if ( isset( $this->attributes['object'] ) ) {
-			return $this->attributes['object'];
+		if ( isset( $this->attributes[ self::OBJECT_KEY ] ) ) {
+			return $this->attributes[ self::OBJECT_KEY ];
 		}
 
 		return false;
@@ -202,7 +212,7 @@ abstract class Model implements Serializes {
 	 * @return WP_Post
 	 */
 	public function get_original_underlying_wp_object() {
-		return $this->original['object'];
+		return $this->original[ self::OBJECT_KEY ];
 	}
 
 	/**
@@ -253,7 +263,7 @@ abstract class Model implements Serializes {
 	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
-		if ( 'object' === $name ) {
+		if ( self::OBJECT_KEY === $name ) {
 			return $this->override_wp_object( $value );
 		}
 
@@ -262,9 +272,9 @@ abstract class Model implements Serializes {
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
-			$this->attributes['object']->{$this->{$method}()} = $value;
+			$this->attributes[ self::OBJECT_KEY ]->{$this->{$method}()} = $value;
 		} else {
-			$this->attributes['table'][ $name ] = $value;
+			$this->attributes[ self::TABLE_KEY ][ $name ] = $value;
 		}
 
 		return $this;
@@ -397,8 +407,8 @@ abstract class Model implements Serializes {
 	public function sync_original() {
 		$this->original = $this->attributes;
 
-		if ( $this->attributes['object'] ) {
-			$this->original['object'] = clone $this->attributes['object'];
+		if ( $this->attributes[ self::OBJECT_KEY ] ) {
+			$this->original[ self::OBJECT_KEY ] = clone $this->attributes[ self::OBJECT_KEY ];
 		}
 
 		return $this;
@@ -443,7 +453,7 @@ abstract class Model implements Serializes {
 	 * @return $this
 	 */
 	private function override_wp_object( $value ) {
-		$this->attributes['object'] = $this->set_wp_object_constants( $value );
+		$this->attributes[ self::OBJECT_KEY ] = $this->set_wp_object_constants( $value );
 
 		return $this;
 	}
@@ -469,7 +479,7 @@ abstract class Model implements Serializes {
 				break;
 		}
 
-		$this->attributes['object'] = $this->set_wp_object_constants( $object );
+		$this->attributes[ self::OBJECT_KEY ] = $this->set_wp_object_constants( $object );
 	}
 
 	/**
@@ -519,15 +529,15 @@ abstract class Model implements Serializes {
 	 */
 	public function get_attribute( $name ) {
 		if ( $method = $this->has_map_method( $name ) ) {
-			$value = $this->attributes['object']->{$this->{$method}()};
+			$value = $this->attributes[ self::OBJECT_KEY ]->{$this->{$method}()};
 		} elseif ( $method = $this->has_compute_method( $name ) ) {
 			$value = $this->{$method}();
 		} else {
-			if ( ! isset( $this->attributes['table'][ $name ] ) ) {
+			if ( ! isset( $this->attributes[ self::TABLE_KEY ][ $name ] ) ) {
 				throw new PropertyDoesNotExistException;
 			}
 
-			$value = $this->attributes['table'][ $name ];
+			$value = $this->attributes[ self::TABLE_KEY ][ $name ];
 		}
 
 		return $value;
