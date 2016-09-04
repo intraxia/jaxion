@@ -9,8 +9,7 @@
     "mockery/mockery": "~0.9.4",
     "10up/wp_mock": "0.1.*",
     "scrutinizer/ocular": "~1.1",
-    "intraxia/codestyle": "dev-master",
-    "couscous/couscous": "^1.5"
+    "intraxia/codestyle": "dev-master"
   },
   "license": "MIT",
   "minimum-stability": "dev",
