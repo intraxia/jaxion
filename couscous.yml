@@ -6,6 +6,7 @@ exclude:
   - src
   - tests
 
+baseUrl: http://intraxia.github.io/jaxion/
 branch: gh-pages
 
 # Used to link to the GitHub project
@@ -13,8 +14,8 @@ github:
     user: intraxia
     repo: jaxion
 
-title: jaxion from intraxia
-subTitle: an object-oriented framework for building complex WordPress plugin applications
+title: Jaxion from Intraxia
+subTitle: An object-oriented framework for building complex WordPress plugin applications
 
 menu:
   items:
@@ -22,6 +23,9 @@ menu:
       text: Home
       relativeUrl: ./
     docs:
-      text: Documentation
+      text: Introduction
       relativeUrl: docs/
+    axolotl:
+      text: Axolotl
+      relativeUrl: docs/axolotl/
 
