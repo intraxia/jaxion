@@ -76,7 +76,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 * @return mixed
 	 */
 	public function at( $index ) {
-		return $this->elements[ $index ];
+		return isset( $this->elements[ $index ] ) ? $this->elements[ $index ] : null;
 	}
 
 	/**
