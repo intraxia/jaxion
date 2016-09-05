@@ -8,6 +8,7 @@ class PostAndMetaModel extends Model implements UsesWordPressPost {
 	protected $fillable = array(
 		'title',
 		'text',
+		'children',
 	);
 
 	protected $guarded = array(

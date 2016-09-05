@@ -1,6 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Test\Axolotl;
 
+use Intraxia\Jaxion\Axolotl\Collection;
 use Intraxia\Jaxion\Axolotl\Model;
 use Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel;
 use Intraxia\Jaxion\Test\Axolotl\Stub\TableModel;
@@ -20,7 +21,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_construct_with_attributes() {
-		$args = array( 'text' => 'Some text' );
+		$args = array(
+			'text' => 'Some text',
+			'children' => null,
+		);
 
 		$model = new PostAndMetaModel( $args );
 
@@ -120,7 +124,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_return_defined_attributes() {
-		$keys = array( 'title', 'text', 'ID', 'url' );
+		$keys = array( 'title', 'text', 'children', 'ID', 'url' );
 
 		$model = new PostAndMetaModel;
 
@@ -139,7 +143,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_retrieve_table_keys() {
-		$keys = array( 'text' );
+		$keys = array( 'text', 'children' );
 
 		$model = new PostAndMetaModel;
 
@@ -192,12 +196,16 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	public function test_should_serialize_from_defined_attributes() {
 		$model = new ModelWithNoHiddenVisibleAttrs( $args = $this->create_args() );
 
-		$keys = array( 'title', 'text', 'ID', 'url' );
+		$keys = array( 'title', 'text', 'children', 'ID', 'url' );
 
 		$this->assertSame( $keys, array_keys( $arr = $model->serialize() ) );
 
 		foreach ( $keys as $key ) {
-			$this->assertSame( $model->get_attribute( $key ), $arr[ $key ] );
+			if ('children' === $key) {
+				$this->assertSame( $model->get_attribute( $key )->serialize(), $arr[ $key ] );
+			} else {
+				$this->assertSame( $model->get_attribute( $key ), $arr[ $key ] );
+			}
 		}
 	}
 
@@ -251,6 +259,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	protected function create_args() {
 		$args = array(
 			'text' => 'Some text',
+			'children' => new Collection,
 			Model::OBJECT_KEY => $this->create_post(),
 		);
 
