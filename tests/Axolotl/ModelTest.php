@@ -24,6 +24,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 		$args = array(
 			'text' => 'Some text',
 			'children' => null,
+			'url' => null,
 		);
 
 		$model = new PostAndMetaModel( $args );
@@ -221,6 +222,40 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame( $original['text'], $attributes['text'] );
 		$this->assertNotSame( $model->get_original_underlying_wp_object(), $model->get_underlying_wp_object() );
+	}
+
+	public function test_should_return_changed_table_attributes_from_original() {
+		$model = new PostAndMetaModel( $this->create_args() );
+		$model->sync_original();
+
+		$model->set_attribute( 'text', 'New text' );
+
+		$original   = $model->get_original_table_attributes();
+		$attributes = $model->get_table_attributes();
+
+		$this->assertNotSame( $original['text'], $attributes['text'] );
+		$this->assertSame(
+			array( 'text' => 'New text' ),
+			$model->get_changed_table_attributes()
+		);
+	}
+
+	public function test_should_return_changed_object_attributes_from_original() {
+		$model = new PostAndMetaModel( $this->create_args() );
+		$model->sync_original();
+
+		$model->unguard();
+		$model->set_attribute( 'ID', 2 );
+		$model->reguard();
+
+		$original   = $model->get_original_underlying_wp_object();
+		$attributes = $model->get_underlying_wp_object();
+
+		$this->assertNotSame( $original, $attributes );
+		$this->assertSame(
+			array( 'ID' => 2 ),
+			$model->get_changed_wp_object_attributes()
+		);
 	}
 
 	public function test_should_clear_fillable_model_attributes() {

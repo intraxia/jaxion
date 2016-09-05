@@ -114,7 +114,9 @@ abstract class Model implements Serializes {
 			$this->create_wp_object();
 		}
 
+		$this->unguard();
 		$this->refresh( $attributes );
+		$this->reguard();
 	}
 
 	/**
@@ -179,11 +181,11 @@ abstract class Model implements Serializes {
 	public function get_changed_table_attributes() {
 		$changed = array();
 
-		foreach ( $this->get_table_attributes() as $attribute ) {
-			if ( $this->get_attribute( $attribute ) !==
-			     $this->get_original_attribute( $attribute )
+		foreach ( $this->get_table_attributes() as $key => $value ) {
+			if ( $value !==
+			     $this->get_original_attribute( $key )
 			) {
-				$changed[ $attribute ] = $this->get_attribute( $attribute );
+				$changed[ $key ] = $value;
 			}
 		}
 
@@ -265,6 +267,10 @@ abstract class Model implements Serializes {
 	public function set_attribute( $name, $value ) {
 		if ( self::OBJECT_KEY === $name ) {
 			return $this->override_wp_object( $value );
+		}
+
+		if ( self::TABLE_KEY === $name ) {
+			return $this->override_table( $value );
 		}
 
 		if ( ! $this->is_fillable( $name ) ) {
@@ -444,16 +450,29 @@ abstract class Model implements Serializes {
 	}
 
 	/**
-	 * Overrides the current WP_Post with a provided one.
+	 * Overrides the current WordPress object with a provided one.
 	 *
 	 * Resets the post's default values and stores it in the attributes.
 	 *
-	 * @param WP_Post $value
+	 * @param WP_Post|WP_Term $value
 	 *
 	 * @return $this
 	 */
 	private function override_wp_object( $value ) {
 		$this->attributes[ self::OBJECT_KEY ] = $this->set_wp_object_constants( $value );
+
+		return $this;
+	}
+
+	/**
+	 * Overrides the current table attributes array with a provided one.
+	 *
+	 * @param array $value
+	 *
+	 * @return $this
+	 */
+	private function override_table( array $value ) {
+		$this->attributes[ self::TABLE_KEY ] = $value;
 
 		return $this;
 	}
@@ -534,7 +553,7 @@ abstract class Model implements Serializes {
 			$value = $this->{$method}();
 		} else {
 			if ( ! isset( $this->attributes[ self::TABLE_KEY ][ $name ] ) ) {
-				throw new PropertyDoesNotExistException;
+				throw new PropertyDoesNotExistException( $name );
 			}
 
 			$value = $this->attributes[ self::TABLE_KEY ][ $name ];
@@ -625,7 +644,10 @@ abstract class Model implements Serializes {
 	 * @return $this
 	 */
 	public function clear() {
-		$keys = $this->get_attribute_keys();
+		$keys = array_merge(
+			$this->get_table_keys(),
+			$this->get_wp_object_keys()
+		);
 
 		foreach ( $keys as $key ) {
 			try {
