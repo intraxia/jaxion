@@ -266,6 +266,10 @@ abstract class Model implements Serializes {
 	 */
 	public function set_attribute( $name, $value ) {
 		if ( self::OBJECT_KEY === $name ) {
+			if ( ! $value ) {
+				throw new \Exception();
+			}
+
 			return $this->override_wp_object( $value );
 		}
 
