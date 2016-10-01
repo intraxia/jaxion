@@ -578,9 +578,19 @@ abstract class Model implements Serializes {
 	 * @throws PropertyDoesNotExistException If property isn't found.
 	 */
 	public function get_original_attribute( $name ) {
-		$original = new static( $this->original );
+		$original_attributes = $this->original;
 
-		return $original->get_attribute( $name );
+		if ( ! is_object( $original_attributes[ static::OBJECT_KEY ] ) ) {
+			unset( $original_attributes[ static::OBJECT_KEY ] );
+		}
+
+		$original = new static( $original_attributes );
+
+		try {
+			return $original->get_attribute( $name );
+		} catch ( \Exception $exception ) {
+			return null;
+		}
 	}
 
 	/**
