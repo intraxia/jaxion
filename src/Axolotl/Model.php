@@ -524,11 +524,11 @@ abstract class Model implements Serializes {
 	 */
 	protected function set_wp_object_constants( $object ) {
 		if ( $this instanceof UsesWordPressPost ) {
-			$object->post_type = $this::get_post_type();
+			$object->post_type = static::get_post_type();
 		}
 
 		if ( $this instanceof UsesWordPressTerm ) {
-			$object->taxonomy = $this::get_taxonomy();
+			$object->taxonomy = static::get_taxonomy();
 		}
 
 		return $object;
