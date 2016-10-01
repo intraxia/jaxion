@@ -1,6 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Axolotl;
 
+use Exception;
 use Intraxia\Jaxion\Contract\Axolotl\Serializes;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressTerm;
@@ -262,12 +263,13 @@ abstract class Model implements Serializes {
 	 *
 	 * @return $this
 	 *
+	 * @throws Exception
 	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
 		if ( self::OBJECT_KEY === $name ) {
 			if ( ! $value ) {
-				throw new \Exception();
+				throw new Exception;
 			}
 
 			return $this->override_wp_object( $value );
@@ -592,7 +594,7 @@ abstract class Model implements Serializes {
 
 		try {
 			return $original->get_attribute( $name );
-		} catch ( \Exception $exception ) {
+		} catch ( Exception $exception ) {
 			return null;
 		}
 	}

@@ -83,7 +83,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 * @return $this
 	 */
 	public function remove( $index ) {
-		if ( ! is_string( $index ) || ! is_numeric( $index ) || ! isset( $this->elements[ $index ]) ) {
+		if ( ! is_string( $index ) || ! is_numeric( $index ) || ! isset( $this->elements[ $index ] ) ) {
 			foreach ( $this->elements as $key => $element ) {
 				if ( $element === $index ) {
 					$index = $key;
