@@ -417,6 +417,12 @@ abstract class Model implements Serializes {
 			$this->original[ self::OBJECT_KEY ] = clone $this->attributes[ self::OBJECT_KEY ];
 		}
 
+		foreach ( $this->original[ self::TABLE_KEY ] as $key => $item ) {
+			if ( is_object( $item ) ) {
+				$this->original[ $key ] = clone $item;
+			}
+		}
+
 		return $this;
 	}
 
