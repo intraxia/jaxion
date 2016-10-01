@@ -22,6 +22,13 @@ class Collection implements Countable, Iterator, Serializes {
 	protected $elements = array();
 
 	/**
+	 * Collection configuration.
+	 *
+	 * @var array
+	 */
+	protected $config = array();
+
+	/**
 	 * Models registered to the collection.
 	 *
 	 * @var string
@@ -42,7 +49,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 * @param array $config
 	 */
 	public function __construct( array $elements = array(), array $config = array() ) {
-		$this->parse_config( $config );
+		$this->parse_config( $this->config = $config );
 
 		foreach ( $elements as $element ) {
 			$this->add( $element );
