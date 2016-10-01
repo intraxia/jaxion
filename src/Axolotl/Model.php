@@ -1,6 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Axolotl;
 
+use Exception;
 use Intraxia\Jaxion\Contract\Axolotl\Serializes;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressTerm;
@@ -262,10 +263,15 @@ abstract class Model implements Serializes {
 	 *
 	 * @return $this
 	 *
+	 * @throws Exception
 	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
 		if ( self::OBJECT_KEY === $name ) {
+			if ( ! $value ) {
+				throw new Exception;
+			}
+
 			return $this->override_wp_object( $value );
 		}
 
@@ -417,6 +423,12 @@ abstract class Model implements Serializes {
 			$this->original[ self::OBJECT_KEY ] = clone $this->attributes[ self::OBJECT_KEY ];
 		}
 
+		foreach ( $this->original[ self::TABLE_KEY ] as $key => $item ) {
+			if ( is_object( $item ) ) {
+				$this->original[ $key ] = clone $item;
+			}
+		}
+
 		return $this;
 	}
 
@@ -514,11 +526,11 @@ abstract class Model implements Serializes {
 	 */
 	protected function set_wp_object_constants( $object ) {
 		if ( $this instanceof UsesWordPressPost ) {
-			$object->post_type = $this::get_post_type();
+			$object->post_type = static::get_post_type();
 		}
 
 		if ( $this instanceof UsesWordPressTerm ) {
-			$object->taxonomy = $this::get_taxonomy();
+			$object->taxonomy = static::get_taxonomy();
 		}
 
 		return $object;
@@ -572,9 +584,19 @@ abstract class Model implements Serializes {
 	 * @throws PropertyDoesNotExistException If property isn't found.
 	 */
 	public function get_original_attribute( $name ) {
-		$original = new static( $this->original );
+		$original_attributes = $this->original;
 
-		return $original->get_attribute( $name );
+		if ( ! is_object( $original_attributes[ static::OBJECT_KEY ] ) ) {
+			unset( $original_attributes[ static::OBJECT_KEY ] );
+		}
+
+		$original = new static( $original_attributes );
+
+		try {
+			return $original->get_attribute( $name );
+		} catch ( Exception $exception ) {
+			return null;
+		}
 	}
 
 	/**

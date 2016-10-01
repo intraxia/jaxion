@@ -22,6 +22,13 @@ class Collection implements Countable, Iterator, Serializes {
 	protected $elements = array();
 
 	/**
+	 * Collection configuration.
+	 *
+	 * @var array
+	 */
+	protected $config = array();
+
+	/**
 	 * Models registered to the collection.
 	 *
 	 * @var string
@@ -42,7 +49,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 * @param array $config
 	 */
 	public function __construct( array $elements = array(), array $config = array() ) {
-		$this->parse_config( $config );
+		$this->parse_config( $this->config = $config );
 
 		foreach ( $elements as $element ) {
 			$this->add( $element );
@@ -69,6 +76,31 @@ class Collection implements Countable, Iterator, Serializes {
 	}
 
 	/**
+	 * Removes an element by index or value.
+	 *
+	 * @param mixed $index
+	 *
+	 * @return $this
+	 */
+	public function remove( $index ) {
+		if ( ! is_string( $index ) || ! is_numeric( $index ) || ! isset( $this->elements[ $index ] ) ) {
+			foreach ( $this->elements as $key => $element ) {
+				if ( $element === $index ) {
+					$index = $key;
+					break;
+				}
+			}
+		}
+
+		if ( isset( $this->elements[ $index ] ) ) {
+			unset( $this->elements[ $index ] );
+			$this->elements = array_values( $this->elements );
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Fetches the element at the provided index.
 	 *
 	 * @param int $index
@@ -77,6 +109,43 @@ class Collection implements Countable, Iterator, Serializes {
 	 */
 	public function at( $index ) {
 		return isset( $this->elements[ $index ] ) ? $this->elements[ $index ] : null;
+	}
+
+	/**
+	 * Maps over the Collection's elements,
+	 *
+	 * @param callable $callback
+	 *
+	 * @return Collection
+	 */
+	protected function map( callable $callback ) {
+		return new Collection( array_map( $callback, $this->elements ), $this->config );
+	}
+
+	/**
+	 * Filters the Collection's elements.
+	 *
+	 * @param callable $callback
+	 *
+	 * @return Collection
+	 */
+	public function filter( callable $callback ) {
+		return new Collection( array_filter( $this->elements, $callback ) );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return array
+	 */
+	public function serialize() {
+		return array_map(function( $element ) {
+			if ( $element instanceof Serializes ) {
+				return $element->serialize();
+			}
+
+			return $element;
+		}, $this->elements);
 	}
 
 	/**
@@ -146,20 +215,5 @@ class Collection implements Countable, Iterator, Serializes {
 
 			$this->model = $model;
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @return array
-	 */
-	public function serialize() {
-		return array_map(function( $element ) {
-			if ( $element instanceof Serializes ) {
-				return $element->serialize();
-			}
-
-			return $element;
-		}, $this->elements);
 	}
 }
