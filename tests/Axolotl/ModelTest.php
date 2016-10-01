@@ -234,10 +234,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 		$attributes = $model->get_table_attributes();
 
 		$this->assertNotSame( $original['text'], $attributes['text'] );
-		$this->assertSame(
-			array( 'text' => 'New text' ),
-			$model->get_changed_table_attributes()
-		);
+		$this->assertSame( array(
+			'text'     => 'New text',
+			'children' => $original['children'],
+		), $model->get_changed_table_attributes() );
 	}
 
 	public function test_should_return_changed_object_attributes_from_original() {
