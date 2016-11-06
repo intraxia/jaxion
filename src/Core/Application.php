@@ -45,7 +45,6 @@ class Application extends Container implements ApplicationContract {
 
 		$this->register_constants( $file );
 		$this->register_core_services();
-		$this->load_i18n();
 
 		register_activation_hook( $file, array( $this, 'activate' ) );
 		register_deactivation_hook( $file, array( $this, 'deactivate' ) );
@@ -143,16 +142,8 @@ class Application extends Container implements ApplicationContract {
 		$this->share( array( 'loader' => 'Intraxia\Jaxion\Contract\Core\Loader' ), function ( $app ) {
 			return new Loader( $app );
 		} );
-	}
-
-	/**
-	 * Load's the plugin's translation files.
-	 */
-	private function load_i18n() {
-		load_plugin_textdomain(
-			$this->fetch( 'basename' ),
-			false,
-			basename( $this->fetch( 'path' ) ) . '/languages/'
-		);
+		$this->share( array( 'i18n' => 'Intaxia\Jaxion\Contract\Core\I18n' ), function ( $app ) {
+			return new I18n( $app->fetch( 'basename' ), $app->fetch( 'path' ) );
+		} );
 	}
 }
