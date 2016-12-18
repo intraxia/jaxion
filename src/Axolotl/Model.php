@@ -59,6 +59,13 @@ abstract class Model implements Serializes {
 	);
 
 	/**
+	 * Default attribute values.
+	 *
+	 * @var array
+	 */
+	protected $defaults = array();
+
+	/**
 	 * Properties which are allowed to be set on the model.
 	 *
 	 * If this array is empty, any attributes can be set on the model.
@@ -564,18 +571,22 @@ abstract class Model implements Serializes {
 	 */
 	public function get_attribute( $name ) {
 		if ( $method = $this->has_map_method( $name ) ) {
-			$value = $this->attributes[ self::OBJECT_KEY ]->{$this->{$method}()};
-		} elseif ( $method = $this->has_compute_method( $name ) ) {
-			$value = $this->{$method}();
-		} else {
-			if ( ! isset( $this->attributes[ self::TABLE_KEY ][ $name ] ) ) {
-				throw new PropertyDoesNotExistException( $name );
-			}
-
-			$value = $this->attributes[ self::TABLE_KEY ][ $name ];
+			return $this->attributes[ self::OBJECT_KEY ]->{$this->{$method}()};
 		}
 
-		return $value;
+		if ( $method = $this->has_compute_method( $name ) ) {
+			return $this->{$method}();
+		}
+
+		if ( isset( $this->attributes[ self::TABLE_KEY ][ $name ] ) ) {
+			return $this->attributes[ self::TABLE_KEY ][ $name ];
+		}
+
+		if ( isset( $this->defaults[ $name ] ) ) {
+			return $this->defaults[ $name ];
+		}
+
+		throw new PropertyDoesNotExistException( $name );
 	}
 
 	/**
