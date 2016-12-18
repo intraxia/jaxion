@@ -268,10 +268,6 @@ abstract class Model implements Serializes {
 	 */
 	public function set_attribute( $name, $value ) {
 		if ( self::OBJECT_KEY === $name ) {
-			if ( ! $value ) {
-				throw new Exception;
-			}
-
 			return $this->override_wp_object( $value );
 		}
 
@@ -466,12 +462,20 @@ abstract class Model implements Serializes {
 	 *
 	 * Resets the post's default values and stores it in the attributes.
 	 *
-	 * @param WP_Post|WP_Term $value
+	 * @param WP_Post|WP_Term|null $value
 	 *
 	 * @return $this
 	 */
 	private function override_wp_object( $value ) {
-		$this->attributes[ self::OBJECT_KEY ] = $this->set_wp_object_constants( $value );
+		if ( is_object( $value ) ) {
+			$this->attributes[ self::OBJECT_KEY ] = $this->set_wp_object_constants( $value );
+		} else {
+			$this->attributes[ self::OBJECT_KEY ] = null;
+
+			if ( $this->uses_wp_object() ) {
+				$this->create_wp_object();
+			}
+		}
 
 		return $this;
 	}
