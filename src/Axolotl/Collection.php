@@ -62,6 +62,8 @@ class Collection implements Countable, Iterator, Serializes {
 	 * @param mixed $element
 	 *
 	 * @throws RuntimeException
+	 *
+	 * @return $this
 	 */
 	public function add( $element ) {
 		if ( $this->model && is_array( $element ) ) {
@@ -73,6 +75,8 @@ class Collection implements Countable, Iterator, Serializes {
 		}
 
 		$this->elements[] = $element;
+
+		return $this;
 	}
 
 	/**
