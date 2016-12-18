@@ -85,18 +85,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 
 		$app     = new App( __FILE__ );
 		$actions = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\HasActions' );
-
-		$app->remove( 'loader' )
-			->define( 'loader', function () use ( $actions ) {
-				$loader = Mockery::mock( 'Intraxia\Jaxion\Core\Loader' );
-				$loader->shouldReceive( 'register_actions' )
-					->once()
-					->with( $actions );
-
-				WP_Mock::expectActionAdded( 'plugins_loaded', array( $loader, 'run' ) );
-
-				return $loader;
-			} );
+		$this->mock_loader( $app )
+			->shouldReceive( 'register_actions' )
+			->once()
+			->with( $actions );
 		$app->define( 'actions', $actions );
 
 		$app->boot();
@@ -107,18 +99,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 
 		$app     = new App( __FILE__ );
 		$filters = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\HasFilters' );
-
-		$app->remove( 'loader' )
-			->define( 'loader', function () use ( $filters ) {
-				$loader = Mockery::mock( 'Intraxia\Jaxion\Core\Loader' );
-				$loader->shouldReceive( 'register_filters' )
-					->once()
-					->with( $filters );
-
-				WP_Mock::expectActionAdded( 'plugins_loaded', array( $loader, 'run' ) );
-
-				return $loader;
-			} );
+		$this->mock_loader( $app )
+			->shouldReceive( 'register_filters' )
+			->once()
+			->with( $filters );
 		$app->define( 'filters', $filters );
 
 		$app->boot();
@@ -129,18 +113,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 
 		$app     = new App( __FILE__ );
 		$shortcode = Mockery::mock( 'Intraxia\Jaxion\Contract\Core\HasShortcode' );
-
-		$app->remove( 'loader' )
-			->define( 'loader', function () use ( $shortcode ) {
-				$loader = Mockery::mock( 'Intraxia\Jaxion\Core\Loader' );
-				$loader->shouldReceive( 'register_shortcode' )
-					->once()
-					->with( $shortcode );
-
-				WP_Mock::expectActionAdded( 'plugins_loaded', array( $loader, 'run' ) );
-
-				return $loader;
-			} );
+		$this->mock_loader( $app )
+			->shouldReceive( 'register_shortcode' )
+			->once()
+			->with( $shortcode );
 		$app->define( 'filters', $shortcode );
 
 		$app->boot();
@@ -150,8 +126,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		WP_Mock::wpPassthruFunction( 'plugin_dir_url', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'plugin_dir_path', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'plugin_basename', array( 'times' => 1 ) );
-
-		WP_Mock::wpPassthruFunction( 'load_plugin_textdomain', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'register_activation_hook', array( 'times' => 1 ) );
 		WP_Mock::wpPassthruFunction( 'register_deactivation_hook', array( 'times' => 1 ) );
 	}
@@ -161,5 +135,20 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		App::shutdown();
 		Mockery::close();
 		WP_Mock::tearDown();
+	}
+
+	private function mock_loader( $app ) {
+		$loader = Mockery::mock( 'Intraxia\Jaxion\Core\Loader' );
+		$loader->shouldReceive( 'register_actions' )
+		       ->once()
+		       ->with( Mockery::type( 'Intraxia\Jaxion\Contract\Core\I18n' ) );
+		WP_Mock::expectActionAdded( 'plugins_loaded', array( $loader, 'run' ) );
+
+		$app->remove( 'loader' )
+			->define( 'loader', function () use ( $loader ) {
+				return $loader;
+			} );
+
+		return $loader;
 	}
 }
