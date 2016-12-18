@@ -26,7 +26,7 @@ interface EntityManager {
 	 *
 	 * @return Collection|WP_Error
 	 */
-	public function find_by( $class, $params = array() );
+	public function find_by( $class, array $params = array() );
 
 	/**
 	 * Saves a new model of the provided class with the given data.
@@ -36,7 +36,7 @@ interface EntityManager {
 	 *
 	 * @return Model|WP_Error
 	 */
-	public function create( $class, $data = array() );
+	public function create( $class, array $data = array() );
 
 	/**
 	 * Updates a model with its latest dataE.
