@@ -109,7 +109,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 *
 	 * @param int $index
 	 *
-	 * @return mixed
+	 * @return mixed|null
 	 */
 	public function at( $index ) {
 		return isset( $this->elements[ $index ] ) ? $this->elements[ $index ] : null;
@@ -135,6 +135,23 @@ class Collection implements Countable, Iterator, Serializes {
 	 */
 	public function filter( callable $callback ) {
 		return new Collection( array_filter( $this->elements, $callback ) );
+	}
+
+	/**
+	 * Fetches a single element in the Collection by callback.
+	 *
+	 * @param callable $callback
+	 *
+	 * @return mixed|null
+	 */
+	public function find( callable $callback ) {
+		foreach ( $this->elements as $element ) {
+			if ( call_user_func( $callback, $element ) ) {
+				return $element;
+			}
+		}
+
+		return null;
 	}
 
 	/**
