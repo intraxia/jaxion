@@ -270,7 +270,6 @@ abstract class Model implements Serializes {
 	 *
 	 * @return $this
 	 *
-	 * @throws Exception
 	 * @throws GuardedPropertyException
 	 */
 	public function set_attribute( $name, $value ) {
