@@ -21,9 +21,9 @@ class Application extends Container implements ApplicationContract {
 	/**
 	 * Singleton instance of the Application object
 	 *
-	 * @var Application
+	 * @var Application[]
 	 */
-	protected static $instance = null;
+	protected static $instances = array();
 
 	/**
 	 * Instantiates a new Application container.
@@ -37,11 +37,11 @@ class Application extends Container implements ApplicationContract {
 	 * @throws ApplicationAlreadyBootedException
 	 */
 	public function __construct( $file, array $providers = array() ) {
-		if ( null !== static::$instance ) {
+		if ( isset( static::$instances[ get_called_class() ] ) ) {
 			throw new ApplicationAlreadyBootedException;
 		}
 
-		static::$instance = $this;
+		static::$instances[ get_called_class() ] = $this;
 
 		$this->register_constants( $file );
 		$this->register_core_services();
@@ -106,19 +106,19 @@ class Application extends Container implements ApplicationContract {
 	 * @throws ApplicationNotBootedException
 	 */
 	public static function instance() {
-		if ( null === static::$instance ) {
+		if ( ! isset( static::$instances[ get_called_class() ] ) ) {
 			throw new ApplicationNotBootedException;
 		}
 
-		return static::$instance;
+		return static::$instances[ get_called_class() ];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public static function shutdown() {
-		if ( null !== static::$instance ) {
-			static::$instance = null;
+		if ( isset( static::$instances[ get_called_class() ] ) ) {
+			unset( static::$instances[ get_called_class() ] );
 		}
 	}
 
