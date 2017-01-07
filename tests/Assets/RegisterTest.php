@@ -115,7 +115,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 			'args'  => array( 'adminScript', 'test.com/test.js', array(), null, false ),
 		) );
 
-		$this->assets->enqueue_admin_scripts();
+		$this->assets->enqueue_admin_scripts( 'jaxion_test' );
 	}
 
 	public function test_should_not_enqueue_admin_script_if_false_condition() {
@@ -132,7 +132,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 			'times' => 0,
 		) );
 
-		$this->assets->enqueue_admin_scripts();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_enqueue_admin_style() {
@@ -150,7 +150,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 			'args'  => array( 'adminStyle', 'test.com/test.css', array(), null, 'all' ),
 		) );
 
-		$this->assets->enqueue_admin_styles();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_not_enqueue_admin_style_if_false_condition() {
@@ -167,7 +167,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 			'times' => 0,
 		) );
 
-		$this->assets->enqueue_admin_styles();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_enqueue_shared_script() {
@@ -186,7 +186,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assets->enqueue_web_scripts();
-		$this->assets->enqueue_admin_scripts();
+		$this->assets->enqueue_admin_scripts( 'jaxion_test' );
 	}
 
 	public function test_should_not_enqueue_shared_script_if_false_condition() {
@@ -204,7 +204,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assets->enqueue_web_scripts();
-		$this->assets->enqueue_admin_scripts();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_enqueue_shared_style() {
@@ -223,7 +223,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assets->enqueue_web_styles();
-		$this->assets->enqueue_admin_styles();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_not_enqueue_shared_style_if_false_condition() {
@@ -241,7 +241,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$this->assets->enqueue_web_styles();
-		$this->assets->enqueue_admin_styles();
+		$this->assets->enqueue_admin_styles( 'jaxion_test' );
 	}
 
 	public function test_should_localize_script_if_set() {
