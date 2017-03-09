@@ -122,7 +122,7 @@ class Collection implements Countable, Iterator, Serializes {
 	 *
 	 * @return Collection
 	 */
-	protected function map( callable $callback ) {
+	public function map( callable $callback ) {
 		return new Collection( array_map( $callback, $this->elements ), $this->config );
 	}
 
