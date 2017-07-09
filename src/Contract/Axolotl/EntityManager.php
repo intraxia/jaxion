@@ -1,7 +1,6 @@
 <?php
 namespace Intraxia\Jaxion\Contract\Axolotl;
 
-use Intraxia\Jaxion\Axolotl\Collection;
 use Intraxia\Jaxion\Axolotl\Model;
 use WP_Error;
 
