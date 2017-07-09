@@ -6,7 +6,7 @@
  * Time: 1:22 PM
  */
 
-namespace Intraxia\Jaxion\Test\Axolotl\Stub;
+namespace Intraxia\Jaxion\Test\Stub;
 
 use Intraxia\Jaxion\Contract\Axolotl\UsesCustomTable;
 

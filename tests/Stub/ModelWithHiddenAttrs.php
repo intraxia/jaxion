@@ -1,5 +1,5 @@
 <?php
-namespace Intraxia\Jaxion\Test\Axolotl\Stub;
+namespace Intraxia\Jaxion\Test\Stub;
 
 class ModelWithHiddenAttrs extends PostAndMetaModel {
 	protected $visible = array();
