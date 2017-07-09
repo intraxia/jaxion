@@ -294,7 +294,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 	protected function create_args() {
 		$args = array(
 			'text' => 'Some text',
-			'children' => new Collection,
+			'children' => new Collection( 'string' ),
 			Model::OBJECT_KEY => $this->create_post(),
 		);
 
