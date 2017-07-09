@@ -191,7 +191,7 @@ abstract class Model implements Serializes {
 
 		foreach ( $this->get_table_attributes() as $key => $value ) {
 			if ( $value !==
-			     $this->get_original_attribute( $key )
+				 $this->get_original_attribute( $key )
 			) {
 				$changed[ $key ] = $value;
 			}
@@ -237,7 +237,7 @@ abstract class Model implements Serializes {
 
 		foreach ( $this->get_wp_object_keys() as $key ) {
 			if ( $this->get_attribute( $key ) !==
-			     $this->get_original_attribute( $key )
+				 $this->get_original_attribute( $key )
 			) {
 				$changed[ $key ] = $this->get_attribute( $key );
 			}
@@ -326,7 +326,7 @@ abstract class Model implements Serializes {
 
 		foreach ( $this->get_attribute_keys() as $key ) {
 			if ( ! $this->has_map_method( $key ) &&
-			     ! $this->has_compute_method( $key )
+				 ! $this->has_compute_method( $key )
 			) {
 				$keys[] = $key;
 			}
