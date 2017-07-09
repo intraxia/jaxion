@@ -11,85 +11,71 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function test_collection_should_implement_countable() {
-		$this->assertInstanceOf( 'Countable', new Collection );
+		$this->assertInstanceOf( 'Countable', new Collection( 'string' ) );
 	}
 
 	public function test_should_return_correct_count() {
-		$this->assertCount( 2, new Collection( array( 'a', 'b' ) ) );
+		$this->assertCount( 2, new Collection( 'string', array( 'a', 'b' ) ) );
 	}
 
 	public function test_should_implement_iterator() {
-		$this->assertInstanceOf( 'Iterator', new Collection );
+		$this->assertInstanceOf( 'Iterator', new Collection( 'string' ) );
 	}
 
 	public function test_should_iterate_correctly() {
-		foreach ( new Collection( array( 'a', 'b' ) ) as $key => $item ) {
+		foreach ( new Collection( 'string', array( 'a', 'b' ) ) as $key => $item ) {
 			$this->assertTrue( in_array( $key, array( 0, 1 ) ) );
 			$this->assertTrue( in_array( $item, array( 'a', 'b' ) ) );
 		}
 	}
 
 	public function test_should_add_to_collection() {
-		$collection = new Collection( array( 'a' ) );
+		$first = new Collection( 'string', array( 'a' ) );
 
-		$this->assertCount( 1, $collection );
+		$this->assertCount( 1, $first );
 
-		$collection->add( 'b' );
+		$second = $first->add( 'b' );
 
-		$this->assertCount( 2, $collection );
+		$this->assertCount( 1, $first );
+		$this->assertCount( 2, $second );
 	}
 
 	public function test_should_get_element_by_index() {
-		$collection = new Collection( array( 'a', 'b' ) );
+		$collection = new Collection( 'string', array( 'a', 'b' ) );
 
 		$this->assertSame( 'b', $collection->at( 1 ) );
 	}
 
-	public function test_should_throw_exception_setting_incorrect_class() {
-		$this->setExpectedException( 'LogicException' );
-
-		new Collection( array(), array(
-			'model' => __CLASS__
-		) );
-	}
-
 	public function test_should_throw_exception_adding_scalar_to_model_collection() {
-		$collection = new Collection( array(), array(
-			'model' => 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel'
-		) );
+		$collection = new Collection( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel' );
 
-		$this->setExpectedException( 'RuntimeException' );
+		$this->setExpectedException( 'InvalidArgumentException' );
 
 		$collection->add( 0 );
 	}
 
 	public function test_should_add_model_to_collection_by_array() {
-		$collection = new Collection( array(
+		$collection = new Collection( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel', array(
 			array( 'title' => 'Post title' )
-		), array(
-			'model' => 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel'
-		) );
+		));
 
 		$this->assertInstanceOf( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel', $collection->at( 0 ) );
 
-		$collection->add( array( 'title' => 'Post title 2' ) );
+		$collection = $collection->add( array( 'title' => 'Post title 2' ) );
 
 		$this->assertInstanceOf( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel', $collection->at( 1 ) );
 		$this->assertSame( 'Post title 2', $collection->at( 1 )->title );
 	}
 
 	public function test_should_add_model_to_collection_by_model() {
-		$collection = new Collection( array(
-			array( 'title' => 'Post title' )
-		), array(
-			'model' => 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel'
-		) );
-
-		$class = 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel';
+		$collection = new Collection(
+			$class = 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel',
+			array( array( 'title' => 'Post title' ) )
+		);
 
 		$this->assertInstanceOf( $class, $collection->at( 0 ) );
 
-		$collection->add( new $class( array( 'title' => 'Post title 2' ) ) );
+		$collection = $collection->add( new $class( array( 'title' => 'Post title 2' ) ) );
 
 		$this->assertInstanceOf( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel', $collection->at( 1 ) );
 		$this->assertSame( 'Post title 2', $collection->at( 1 )->title );
@@ -97,19 +83,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
 	public function test_should_not_change_unserializable() {
 		$args       = array( 'a', 'b' );
-		$collection = new Collection( $args );
+		$collection = new Collection( 'string', $args );
 
 		$this->assertSame( $args, $collection->serialize() );
 	}
 
 	public function test_should_serialze_serializables() {
-		$collection = new Collection( array(
+		$collection = new Collection( 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel', array(
 			array(
 				'title' => 'Post title',
 				'text'  => 'Text value',
 			)
-		), array(
-			'model' => 'Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel'
 		) );
 
 		$this->assertCount( 1, $collection->serialize() );

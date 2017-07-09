@@ -39,7 +39,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return bool
 	 */
-	public function contains( callable $condition );
+	public function contains( $condition );
 
 	/**
 	 * Returns the first element in the collection that satisfies
@@ -48,7 +48,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return mixed
 	 */
-	public function find( callable $condition );
+	public function find( $condition );
 
 	/**
 	 * Returns the index of the first element in the collection that satisfies
@@ -57,7 +57,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return int
 	 */
-	public function find_index( callable $condition );
+	public function find_index( $condition );
 
 	/**
 	 * Returns the element in the collection at $index.
@@ -92,7 +92,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return Collection
 	 */
-	public function filter( callable $condition );
+	public function filter( $condition );
 
 	/**
 	 * Returns the last element in the collection that satisfies $condition,
@@ -101,7 +101,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return mixed
 	 */
-	public function find_last( callable $condition );
+	public function find_last( $condition );
 
 	/**
 	 * Returns the index of the last element in the collection that satisfies
@@ -110,7 +110,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return int
 	 */
-	public function find_last_index( callable $condition );
+	public function find_last_index( $condition );
 
 	/**
 	 * Returns a collection that contains the subset of elements ranging from the
@@ -128,6 +128,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 *
 	 * @param int   $index     Index to start at.
 	 * @param mixed $element Element to insert.
+	 * @return Collection
 	 * @throws InvalidArgumentException
 	 * @throws OutOfRangeException
 	 */
@@ -138,6 +139,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 *
 	 * @param int   $index
 	 * @param array $elements
+	 * @return Collection
 	 * @throws OutOfRangeException
 	 */
 	public function insert_range( $index, array $elements );
@@ -148,7 +150,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param  callable $condition
 	 * @return Collection
 	 */
-	public function without( callable $condition );
+	public function without( $condition );
 
 	/**
 	 * Removes the element at $index.
@@ -173,7 +175,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $callback
 	 * @return Collection
 	 */
-	public function sort( callable $callback );
+	public function sort( $callback );
 
 	/**
 	 * Returns an array containing the elements in the collection.
@@ -190,7 +192,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param null     $initial
 	 * @return mixed
 	 */
-	public function reduce( callable $callable, $initial = null );
+	public function reduce( $callable, $initial = null );
 
 	/**
 	 * Returns true if every element in the collection satisfies $condition,
@@ -199,7 +201,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return bool
 	 */
-	public function every( callable $condition );
+	public function every( $condition );
 
 	/**
 	 * Removes all of the elements in the collection starting at index $num.
@@ -226,7 +228,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return Collection
 	 */
-	public function drop_while( callable $condition );
+	public function drop_while( $condition );
 
 	/**
 	 * Removes the first element in the collection.
@@ -262,14 +264,14 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $condition
 	 * @return Collection
 	 */
-	public function take_while( callable $condition );
+	public function take_while( $condition );
 
 	/**
 	 * Applies the callback function $callable to each element in the collection.
 	 *
 	 * @param callable $callable
 	 */
-	public function each( callable $callable );
+	public function each( $callable );
 
 	/**
 	 * Returns a new instance of the collection with the callback function
@@ -278,7 +280,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param callable $callable
 	 * @return Collection
 	 */
-	public function map( callable $callable );
+	public function map( $callable );
 
 	/**
 	 * Iteratively reduces the collection to a single value using the callback
@@ -288,7 +290,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param null     $initial
 	 * @return mixed
 	 */
-	public function reduce_right( callable $callable, $initial = null );
+	public function reduce_right( $callable, $initial = null );
 
 	/**
 	 * Randomly reorders the elements in the collection.
@@ -300,11 +302,11 @@ interface Collection extends Iterator, Countable, Serializes {
 	/**
 	 * Adds every member of $elements to the collection.
 	 *
-	 * @param array $elements Array of elements to merge.
+	 * @param array|Collection $elements Array of elements to merge.
 	 * @return Collection
 	 * @throws InvalidArgumentException
 	 */
-	public function merge( array $elements );
+	public function merge( $elements );
 
 	/**
 	 * Get first element of the collection
