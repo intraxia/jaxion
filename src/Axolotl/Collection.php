@@ -124,7 +124,7 @@ class Collection implements CollectionContract {
 	public function find( $condition ) {
 		$index = $this->find_index( $condition );
 
-		return -1 === $index ? false : $this->elements[ $index ];
+		return -1 === $index ? null : $this->elements[ $index ];
 	}
 
 	/**
@@ -322,7 +322,7 @@ class Collection implements CollectionContract {
 	 *
 	 * @return Collection
 	 */
-	public function without( $condition ) {
+	public function reject( $condition ) {
 		$inverse = function ( $element ) use ( $condition ) {
 			return ! call_user_func( $condition, $element );
 		};
@@ -429,6 +429,10 @@ class Collection implements CollectionContract {
 	 * @throws InvalidArgumentException
 	 */
 	public function drop( $num ) {
+		if ( $num > $this->count() ) {
+			$num = $this->count();
+		}
+
 		return $this->slice( $num, $this->count() );
 	}
 

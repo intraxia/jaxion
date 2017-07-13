@@ -150,7 +150,7 @@ interface Collection extends Iterator, Countable, Serializes {
 	 * @param  callable $condition
 	 * @return Collection
 	 */
-	public function without( $condition );
+	public function reject( $condition );
 
 	/**
 	 * Removes the element at $index.

@@ -3,10 +3,10 @@ namespace Intraxia\Jaxion\Test\Axolotl;
 
 use Intraxia\Jaxion\Axolotl\Collection;
 use Intraxia\Jaxion\Axolotl\Model;
-use Intraxia\Jaxion\Test\Axolotl\Stub\PostAndMetaModel;
-use Intraxia\Jaxion\Test\Axolotl\Stub\TableModel;
-use Intraxia\Jaxion\Test\Axolotl\Stub\ModelWithHiddenAttrs;
-use Intraxia\Jaxion\Test\Axolotl\Stub\ModelWithNoHiddenVisibleAttrs;
+use Intraxia\Jaxion\Test\Stub\PostAndMetaModel;
+use Intraxia\Jaxion\Test\Stub\TableModel;
+use Intraxia\Jaxion\Test\Stub\ModelWithHiddenAttrs;
+use Intraxia\Jaxion\Test\Stub\ModelWithNoHiddenVisibleAttrs;
 use Mockery;
 use WP_Post;
 

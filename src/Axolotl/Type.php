@@ -26,9 +26,10 @@ class Type {
 	 * Type constructor.
 	 *
 	 * @param string $type
+	 * @param bool   $key_type
 	 */
-	public function __construct( $type ) {
-		$this->type = $this->determine( $type );
+	public function __construct( $type, $key_type = false ) {
+		$this->type = $this->determine( $type, $key_type );
 	}
 
 	/**
