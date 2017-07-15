@@ -8,12 +8,13 @@ interface EntityManager {
 	/**
 	 * Get a single model of the provided class with the given ID.
 	 *
-	 * @param string $class Fully qualified class name of model.
-	 * @param int    $id    ID of the model.
+	 * @param string $class  Fully qualified class name of model.
+	 * @param int    $id     ID of the model.
+	 * @param array  $params Extra params/options.
 	 *
 	 * @return Model|WP_Error
 	 */
-	public function find( $class, $id );
+	public function find( $class, $id, array $params = array() );
 
 	/**
 	 * Finds all the models of the provided class for the given params.
@@ -32,10 +33,11 @@ interface EntityManager {
 	 *
 	 * @param string $class
 	 * @param array  $data
+	 * @param array  $options
 	 *
 	 * @return Model|WP_Error
 	 */
-	public function create( $class, array $data = array() );
+	public function create( $class, array $data = array(), array $options = array() );
 
 	/**
 	 * Updates a model with its latest dataE.
