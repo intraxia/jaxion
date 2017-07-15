@@ -606,11 +606,7 @@ abstract class Model implements Serializes {
 
 		$original = new static( $original_attributes );
 
-		try {
-			return $original->get_attribute( $name );
-		} catch ( Exception $exception ) {
-			return null;
-		}
+		return $original->get_attribute( $name );
 	}
 
 	/**
