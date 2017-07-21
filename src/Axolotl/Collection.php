@@ -188,7 +188,7 @@ class Collection implements CollectionContract {
 	 *
 	 * @param  callable $condition Condition to satisfy.
 	 *
-	 * @return mixed
+	 * @return Collection
 	 */
 	public function filter( $condition ) {
 		$elements = array();
