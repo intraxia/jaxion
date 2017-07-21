@@ -585,7 +585,7 @@ abstract class Model implements Serializes {
 			return $this->defaults[ $name ];
 		}
 
-		throw new PropertyDoesNotExistException( $name );
+		return null;
 	}
 
 	/**

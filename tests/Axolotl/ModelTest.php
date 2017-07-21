@@ -265,11 +265,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 
 		$model->clear();
 
-		$this->setExpectedException( 'Intraxia\Jaxion\Axolotl\PropertyDoesNotExistException' );
-
-		$model->get_attribute( 'text' );
-
-		$this->assertSame( $args['post'], $model->get_underlying_wp_object() );
+		$this->assertNull( $model->get_attribute( 'text' ) );
 	}
 
 	public function tearDown() {
