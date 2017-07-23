@@ -40,7 +40,7 @@ interface EntityManager {
 	public function create( $class, array $data = array(), array $options = array() );
 
 	/**
-	 * Updates a model with its latest dataE.
+	 * Updates a model with its latest data.
 	 *
 	 * @param Model $model
 	 *
@@ -49,7 +49,7 @@ interface EntityManager {
 	public function persist( Model $model );
 
 	/**
-	 * Delete the provide
+	 * Delete the provided model from the database.
 	 *
 	 * @param Model $model
 	 * @param bool  $force
