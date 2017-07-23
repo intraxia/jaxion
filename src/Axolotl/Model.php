@@ -3,6 +3,7 @@ namespace Intraxia\Jaxion\Axolotl;
 
 use Exception;
 use Intraxia\Jaxion\Contract\Axolotl\Serializes;
+use Intraxia\Jaxion\Contract\Axolotl\UsesCustomTable;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressPost;
 use Intraxia\Jaxion\Contract\Axolotl\UsesWordPressTerm;
 use LogicException;
@@ -624,6 +625,10 @@ abstract class Model implements Serializes {
 
 		if ( $this instanceof UsesWordPressTerm ) {
 			return $this->get_underlying_wp_object()->term_id;
+		}
+
+		if ( $this instanceof UsesCustomTable ) {
+			return $this->get_attribute( $this->get_primary_key() );
 		}
 
 		// Model w/o wp_object not yet supported.
