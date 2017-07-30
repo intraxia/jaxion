@@ -23,4 +23,13 @@ class TableModel extends Model implements UsesCustomTable{
 	public static function get_table_name() {
 		return 'custom';
 	}
+
+	/**
+	 * Get the attribute used as the primary key.
+	 *
+	 * @return string
+	 */
+	public static function get_primary_key() {
+		return 'ID';
+	}
 }
