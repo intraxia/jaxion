@@ -265,7 +265,7 @@ class Dictionary implements DictionaryContract {
 			$items[ $key ] = $v;
 		}
 
-		return new static( $this->get_key_type(), $val_type, $items );
+		return new static( $this->get_key_type(), $val_type ? : $this->get_value_type(), $items );
 	}
 
 	/**
