@@ -128,6 +128,7 @@ class Application extends Container implements ApplicationContract {
 	 * @param string $file
 	 */
 	private function register_constants( $file ) {
+		$this->share( 'file', $file );
 		$this->share( 'url', plugin_dir_url( $file ) );
 		$this->share( 'path', plugin_dir_path( $file ) );
 		$this->share( 'basename', $basename = plugin_basename( $file ) );
