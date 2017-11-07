@@ -17,7 +17,7 @@ class Register implements RegisterContract {
 	 *
 	 * @var string
 	 */
-	private $min = '';
+	private $min = '.min';
 
 	/**
 	 * Url to the plugin directory.
@@ -71,9 +71,9 @@ class Register implements RegisterContract {
 	 */
 	public function set_debug( $debug ) {
 		if ( $debug ) {
-			$this->min = '.min';
-		} else {
 			$this->min = '';
+		} else {
+			$this->min = '.min';
 		}
 	}
 
@@ -179,7 +179,7 @@ class Register implements RegisterContract {
 		if ( $script['condition']( $hook ) ) {
 			wp_enqueue_script(
 				$script['handle'],
-				$this->url . $script['src'] . '.js',
+				$this->url . $script['src'] . $this->min . '.js',
 				isset( $script['deps'] ) ? $script['deps'] : array(),
 				$this->version,
 				isset( $script['footer'] ) ? $script['footer'] : false
@@ -209,7 +209,7 @@ class Register implements RegisterContract {
 		if ( $style['condition']( $hook ) ) {
 			wp_enqueue_style(
 				$style['handle'],
-				$this->url . $style['src'] . '.css',
+				$this->url . $style['src'] . $this->min . '.css',
 				isset( $style['deps'] ) ? $style['deps'] : array(),
 				$this->version,
 				isset( $style['media'] ) ? $style['media'] : 'all'
