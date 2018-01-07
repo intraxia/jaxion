@@ -1,6 +1,7 @@
 <?php
 namespace Intraxia\Jaxion\Test\Assets;
 
+use Mockery;
 use WP_Mock;
 use Intraxia\Jaxion\Assets\Register;
 use ReflectionProperty;
@@ -15,6 +16,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 		parent::setUp();
 		WP_Mock::setUp();
 		$this->assets = new Register( 'test.com/' );
+		$this->assets->set_debug( true );
 	}
 
 	public function test_should_toggle_debug_mode() {
@@ -23,11 +25,11 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assets->set_debug( true );
 
-		$this->assertSame( '.min', $min->getValue( $this->assets ) );
+		$this->assertSame( '', $min->getValue( $this->assets ) );
 
 		$this->assets->set_debug( false );
 
-		$this->assertSame( '', $min->getValue( $this->assets ) );
+		$this->assertSame( '.min', $min->getValue( $this->assets ) );
 	}
 
 	public function test_should_enqueue_web_script() {
@@ -273,6 +275,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		parent::tearDown();
+		Mockery::close();
 		WP_Mock::tearDown();
 	}
 }
