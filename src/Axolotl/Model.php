@@ -678,6 +678,7 @@ abstract class Model implements Serializes {
 	 * This does not touch the model's original attributes, and will
 	 * only clear fillable attributes, unless the model is unguarded.
 	 *
+	 * @throws Exception
 	 * @return $this
 	 */
 	public function clear() {
@@ -689,8 +690,11 @@ abstract class Model implements Serializes {
 		foreach ( $keys as $key ) {
 			try {
 				$this->set_attribute( $key, null );
-			} catch ( GuardedPropertyException $e ) {
+			} catch ( Exception $e ) {
 				// We won't clear out guarded attributes.
+				if ( ! ( $e instanceof GuardedPropertyException ) ) {
+					throw $e;
+				}
 			}
 		}
 
