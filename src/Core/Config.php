@@ -97,7 +97,13 @@ class Config {
 			return $this->loaded[ $filename ];
 		}
 
-		$contents = file_get_contents( $this->path . 'config/' . $filename . '.json' );
+		$config = $this->path . 'config/' . $filename . '.json';
+
+		if ( ! file_exists( $config ) ) {
+			return null;
+		}
+
+		$contents = file_get_contents( $config );
 
 		if ( false === $contents ) {
 			return null;
