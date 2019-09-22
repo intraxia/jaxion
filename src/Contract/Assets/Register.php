@@ -52,4 +52,9 @@ interface Register extends HasActions {
 	 * @param string $hook Passes a string representing the current page.
 	 */
 	public function enqueue_admin_styles( $hook );
+
+	/**
+	 * Enqueues the block styles & registers the block.
+	 */
+	public function register_blocks();
 }

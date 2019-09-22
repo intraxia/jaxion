@@ -145,6 +145,55 @@ class Register implements RegisterContract {
 
 	/**
 	 * {@inheritDoc}
+	 */
+	public function register_blocks() {
+		$blocks = array();
+
+		foreach ( $this->styles as $style ) {
+			if ( in_array( $style['type'], array( 'block' ) ) ) {
+				wp_register_style(
+					$style['handle'],
+					$this->url . $style['src'] . $this->min . '.css',
+					isset( $style['deps'] ) ? $style['deps'] : array(),
+					$this->version,
+					isset( $style['media'] ) ? $style['media'] : 'all'
+				);
+
+				if ( ! isset( $blocks[ $style['block'] ] ) ) {
+					$blocks[ $style['block'] ] = array();
+				}
+
+				$blocks[ $style['block'] ]['editor_style'] = $style['handle'];
+			}
+		}
+
+		foreach ( $this->scripts as $script ) {
+			if ( in_array( $script['type'], array( 'block' ) ) ) {
+				wp_register_script(
+					$script['handle'],
+					$this->url . $script['src'] . $this->min . '.js',
+					isset( $script['deps'] ) ? $script['deps'] : array(),
+					$this->version,
+					isset( $script['footer'] ) ? $script['footer'] : false
+				);
+
+				$this->localize_script( $script );
+
+				if ( ! isset( $blocks[ $script['block'] ] ) ) {
+					$blocks[ $script['block'] ] = array();
+				}
+
+				$blocks[ $script['block'] ]['editor_script'] = $script['handle'];
+			}
+		}
+
+		foreach ( $blocks as $slug => $opts ) {
+			register_block_type( $slug, $opts );
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
 	 *
 	 * @return array[]
 	 */
@@ -166,6 +215,10 @@ class Register implements RegisterContract {
 				'hook'   => 'admin_enqueue_scripts',
 				'method' => 'enqueue_admin_styles',
 			),
+			array(
+				'hook'   => 'init',
+				'method' => 'register_blocks',
+			)
 		);
 	}
 
@@ -185,17 +238,7 @@ class Register implements RegisterContract {
 				isset( $script['footer'] ) ? $script['footer'] : false
 			);
 
-			if ( isset( $script['localize'] ) ) {
-				if ( is_callable( $script['localize'] ) ) { // @todo make all properties callables
-					$script['localize'] = call_user_func( $script['localize'] );
-				}
-
-				wp_localize_script(
-					$script['handle'],
-					$script['localize']['name'],
-					$script['localize']['data']
-				);
-			}
+			$this->localize_script( $script );
 		}
 	}
 
@@ -215,5 +258,26 @@ class Register implements RegisterContract {
 				isset( $style['media'] ) ? $style['media'] : 'all'
 			);
 		}
+	}
+
+	/**
+	 * Registers the localization of the provided script.
+	 *
+	 * @param  array $script  Script defintion.
+	 */
+	protected function localize_script( $script ) {
+		if ( ! isset( $script['localize'] ) ) {
+			return;
+		}
+
+		if ( is_callable( $script['localize'] ) ) { // @todo make all properties callables
+			$script['localize'] = call_user_func( $script['localize'] );
+		}
+
+		wp_localize_script(
+			$script['handle'],
+			$script['localize']['name'],
+			$script['localize']['data']
+		);
 	}
 }
