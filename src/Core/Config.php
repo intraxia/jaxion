@@ -54,11 +54,18 @@ class Config {
 	public $basename;
 
 	/**
-	 * Loaded configuration files.
+	 * Loaded JSON configuration files.
 	 *
 	 * @var array
 	 */
-	private $loaded = array();
+	private $json = array();
+
+	/**
+	 * Loaded PHP configuration files.
+	 *
+	 * @var array
+	 */
+	private $php = array();
 
 	/**
 	 * Config constructor.
@@ -93,22 +100,43 @@ class Config {
 	 * @return array|null
 	 */
 	public function get_config_json( $filename ) {
-		if ( isset( $this->loaded[ $filename ] ) ) {
-			return $this->loaded[ $filename ];
+		if ( isset( $this->json[ $filename ] ) ) {
+			return $this->json[ $filename ];
 		}
 
-		$config = $this->path . 'config/' . $filename . '.json';
+		$path = $this->path . 'config/' . $filename . '.json';
 
-		if ( ! file_exists( $config ) ) {
+		if ( ! file_exists( $path ) ) {
 			return null;
 		}
 
-		$contents = file_get_contents( $config );
+		$contents = file_get_contents( $path );
 
 		if ( false === $contents ) {
 			return null;
 		}
 
-		return $this->loaded[ $filename ] = json_decode( $contents, true );
+		return $this->json[ $filename ] = json_decode( $contents, true );
+	}
+
+	/**
+	 * Load a configuration PHP file from the config folder.
+	 *
+	 * @param string $filename
+	 *
+	 * @return array|null
+	 */
+	public function get_config_php( $filename ) {
+		if ( isset( $this->php[ $filename ] ) ) {
+			return $this->php[ $filename ];
+		}
+
+		$path = $this->path . 'config/' . $filename . '.php';
+
+		if ( ! file_exists( $path ) ) {
+			return null;
+		}
+
+		return $this->php[ $filename ] = require $path;
 	}
 }
