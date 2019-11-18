@@ -218,7 +218,7 @@ class Register implements RegisterContract {
 			array(
 				'hook'   => 'init',
 				'method' => 'register_blocks',
-			)
+			),
 		);
 	}
 

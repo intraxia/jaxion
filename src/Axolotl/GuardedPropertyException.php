@@ -19,11 +19,11 @@ class GuardedPropertyException extends RuntimeException {
 
 	/**
 	 * Construct a GuardedPropertyException.
+	 *
 	 * @param string $property Property that was guarded.
-	 * @param mixed[] $args    Parent args.
 	 */
-	public function __construct( $property, ...$args ) {
-		parent::__construct( ...$args );
+	public function __construct( $property ) {
+		parent::__construct();
 
 		$this->property = $property;
 	}
