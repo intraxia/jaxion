@@ -283,7 +283,7 @@ abstract class Model implements Serializes {
 		}
 
 		if ( ! $this->is_fillable( $name ) ) {
-			throw new GuardedPropertyException;
+			throw new GuardedPropertyException( $name );
 		}
 
 		if ( $method = $this->has_map_method( $name ) ) {
