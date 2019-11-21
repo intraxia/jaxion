@@ -93,18 +93,18 @@ class Config {
 	}
 
 	/**
-	 * Load a configuration JSON file from the config folder.
+	 * Load a JSON file from the resources folder.
 	 *
 	 * @param string $filename
 	 *
 	 * @return array|null
 	 */
-	public function get_config_json( $filename ) {
+	public function get_json_resource( $filename ) {
 		if ( isset( $this->json[ $filename ] ) ) {
 			return $this->json[ $filename ];
 		}
 
-		$path = $this->path . 'config/' . $filename . '.json';
+		$path = $this->path . 'resources/' . $filename . '.json';
 
 		if ( ! file_exists( $path ) ) {
 			return null;
@@ -126,12 +126,12 @@ class Config {
 	 *
 	 * @return array|null
 	 */
-	public function get_config_php( $filename ) {
+	public function get_php_config( $filename ) {
 		if ( isset( $this->php[ $filename ] ) ) {
 			return $this->php[ $filename ];
 		}
 
-		$path = $this->path . 'config/' . $filename . '.php';
+		$path = $this->path . 'resources/config/' . $filename . '.php';
 
 		if ( ! file_exists( $path ) ) {
 			return null;
