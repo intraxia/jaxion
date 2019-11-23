@@ -2,7 +2,7 @@
   "name": "intraxia/jaxion",
   "description": "A WordPress plugin framework for modern WordPress development.",
   "require": {
-    "php": ">=5.3.0",
+    "php": ">=5.6.0",
     "myclabs/php-enum": "^1.5.2"
   },
   "require-dev": {
