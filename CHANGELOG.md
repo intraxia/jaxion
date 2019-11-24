@@ -2,17 +2,23 @@
 
 All Notable changes to `jaxion` will be documented in this file. This change log follows the [Keep a Changelog standards]. Versions follows [Semantic Versioning].
 
-## [NEXT] ##
+## [0.0.2] ##
 
 ### Added ###
 * Unit tests for all Model-related functionality.
 * Exposed and memoized methods for key-related info for Models.
     * These will be used by the EntityManager to fill in all of the Model's attributes.
+* Add `I18n` service.
+* Update `Application` to manage instances.
+* Add `Dictionary`.
+* Bump minimum version to PHP 5.6.
 
 ### Changed ###
 * Moved all Database-related code to Axolotl namespace,
 * Renamed `Model\Base` class to `Axolotl\Model` class.
 * Removed `Model\Post` class.
+* Improve `Collection`.
+* Allow hook to be passed to `$condition` on admin
 
 ## [0.0.1] ##
 
@@ -31,5 +37,6 @@ All Notable changes to `jaxion` will be documented in this file. This change log
 
   [Keep a Changelog standards]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
+  [0.0.2]: https://github.com/intraxia/jaxion/tree/0.0.2
   [0.0.1]: https://github.com/intraxia/jaxion/tree/0.0.1
   [NEXT]: http://github.com/intraxia/jaxion
