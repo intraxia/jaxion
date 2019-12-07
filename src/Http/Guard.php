@@ -22,7 +22,7 @@ class Guard implements GuardContract {
 	 */
 	protected $defaults = array(
 		'rule'     => 'public',
-		'callback' => false,
+		'callback' => null,
 	);
 
 	/**
@@ -64,8 +64,7 @@ class Guard implements GuardContract {
 
 		// disable in rule is misconfigused
 		// @todo set up internal translations
-		// @todo also, this error message kinda sucks
-		return new WP_Error( '500', __( 'Guard failure', 'jaxion' ) );
+		return new WP_Error( 'misconfigured_guard', __( 'Misconfigured guard rule', 'jaxion' ), [ 'status' => 500 ] );
 	}
 
 	/**
@@ -74,7 +73,7 @@ class Guard implements GuardContract {
 	 * @return bool|WP_Error
 	 */
 	protected function can_edit_others_posts() {
-		return current_user_can( 'edit_others_posts' ) ?: new WP_Error( 'unauthorized', __( 'Unauthorized user', 'jaxion' ), array( 'status' => 401 ) );
+		return current_user_can( 'edit_others_posts' ) ?: $this->make_error();
 	}
 
 	/**
@@ -83,7 +82,16 @@ class Guard implements GuardContract {
 	 * @return bool|WP_Error
 	 */
 	protected function user_logged_in() {
-		return is_user_logged_in() ?: new WP_Error( 'unauthorized', __( 'Unauthorized user', 'jaxion' ), array( 'status' => 401 ) );
+		return is_user_logged_in() ?: $this->make_error();
+	}
+
+	/**
+	 * Checks whether the user can manage the site options.
+	 *
+	 * @return bool|WP_Error
+	 */
+	protected function can_manage_options() {
+		return current_user_can( 'manage_options' ) ?: $this->make_error();
 	}
 
 	/**
@@ -96,5 +104,14 @@ class Guard implements GuardContract {
 	protected function set_defaults( $options ) {
 		// these are the valid options
 		return wp_parse_args( $options, $this->defaults );
+	}
+
+	/**
+	 * Create an unauthorized error object.
+	 *
+	 * @return WP_Error
+	 */
+	protected function make_error() {
+		return new WP_Error( 'unauthorized', __( 'Unauthorized user', 'jaxion' ), array( 'status' => 401 ) );
 	}
 }
