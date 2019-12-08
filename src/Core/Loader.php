@@ -53,6 +53,25 @@ class Loader implements LoaderContract {
 	}
 
 	/**
+	 * Register a service with the loader.
+	 *
+	 * @param mixed $service
+	 */
+	public function register( $service ) {
+		if ( $service instanceof HasActions ) {
+			$this->register_actions( $service );
+		}
+
+		if ( $service instanceof HasFilters ) {
+			$this->register_filters( $service );
+		}
+
+		if ( $service instanceof HasShortcode ) {
+			$this->register_shortcode( $service );
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @param HasActions $service
