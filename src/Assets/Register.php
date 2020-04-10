@@ -13,13 +13,6 @@ use Intraxia\Jaxion\Contract\Assets\Register as RegisterContract;
  */
 class Register implements RegisterContract {
 	/**
-	 * Minification string for enqueued assets.
-	 *
-	 * @var string
-	 */
-	private $min = '.min';
-
-	/**
 	 * Url to the plugin directory.
 	 *
 	 * @var string
@@ -62,19 +55,6 @@ class Register implements RegisterContract {
 	public function __construct( $url, $version = null ) {
 		$this->url     = $url;
 		$this->version = $version ?: null; // Empty string should remain null.
-	}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @param bool $debug
-	 */
-	public function set_debug( $debug ) {
-		if ( $debug ) {
-			$this->min = '';
-		} else {
-			$this->min = '.min';
-		}
 	}
 
 	/**
@@ -153,7 +133,7 @@ class Register implements RegisterContract {
 			if ( in_array( $style['type'], array( 'block' ) ) ) {
 				wp_register_style(
 					$style['handle'],
-					$this->url . $style['src'] . $this->min . '.css',
+					$this->url . $style['src'],
 					isset( $style['deps'] ) ? $style['deps'] : array(),
 					$this->version,
 					isset( $style['media'] ) ? $style['media'] : 'all'
@@ -171,7 +151,7 @@ class Register implements RegisterContract {
 			if ( in_array( $script['type'], array( 'block' ) ) ) {
 				wp_register_script(
 					$script['handle'],
-					$this->url . $script['src'] . $this->min . '.js',
+					$this->url . $script['src'],
 					isset( $script['deps'] ) ? $script['deps'] : array(),
 					$this->version,
 					isset( $script['footer'] ) ? $script['footer'] : false
@@ -232,7 +212,7 @@ class Register implements RegisterContract {
 		if ( $script['condition']( $hook ) ) {
 			wp_enqueue_script(
 				$script['handle'],
-				$this->url . $script['src'] . $this->min . '.js',
+				$this->url . $script['src'],
 				isset( $script['deps'] ) ? $script['deps'] : array(),
 				$this->version,
 				isset( $script['footer'] ) ? $script['footer'] : false
@@ -252,7 +232,7 @@ class Register implements RegisterContract {
 		if ( $style['condition']( $hook ) ) {
 			wp_enqueue_style(
 				$style['handle'],
-				$this->url . $style['src'] . $this->min . '.css',
+				$this->url . $style['src'],
 				isset( $style['deps'] ) ? $style['deps'] : array(),
 				$this->version,
 				isset( $style['media'] ) ? $style['media'] : 'all'

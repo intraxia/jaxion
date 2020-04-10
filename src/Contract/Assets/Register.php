@@ -4,16 +4,6 @@ namespace Intraxia\Jaxion\Contract\Assets;
 use Intraxia\Jaxion\Contract\Core\HasActions;
 
 interface Register extends HasActions {
-	/**
-	 * Enable debug mode for the enqueued assets.
-	 *
-	 * Debug mode will enqueue unminified versions of the registered assets.
-	 * Primarily, this is intended to be used along with WordPress's `SCRIPT_DEBUG`
-	 * constant, which enables unminified core assets to be enqueued.
-	 *
-	 * @param bool $debug
-	 */
-	public function set_debug( $debug );
 
 	/**
 	 * Provides a method to register new scripts outside of the constructor.
